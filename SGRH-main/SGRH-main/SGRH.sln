@@ -5,7 +5,10 @@ VisualStudioVersion = 17.8.34511.84
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SGRH.Web", "SGRH.Web\SGRH.Web.csproj", "{A3B21999-905A-4D8E-80FE-FA333C8A9912}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SGRHTestProject", "SGRHTestProject\SGRHTestProject.csproj", "{129AE835-41FE-4175-A5BB-34192590E750}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SGRHTestProject", "SGRHTestProject\SGRHTestProject.csproj", "{129AE835-41FE-4175-A5BB-34192590E750}"
+	ProjectSection(ProjectDependencies) = postProject
+		{A3B21999-905A-4D8E-80FE-FA333C8A9912} = {A3B21999-905A-4D8E-80FE-FA333C8A9912}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
