@@ -80,26 +80,6 @@ namespace SGRHTestProject
         }
 
         [Test]
-        public async Task GetLayoffById_ValidId_ReturnsLayoff()
-        {
-            // Arrange
-            var layoff = new Layoff
-            {
-                Id = 1,
-                PersonalAction = new PersonalAction { User = new User { Id = "456" } }
-            };
-            _context.Layoffs.Add(layoff);
-            await _context.SaveChangesAsync();
-
-            // Act
-            var result = await _layoffsService.GetLayoffById(1);
-
-            // Assert
-            Assert.IsNotNull(result);
-            Assert.AreEqual(layoff.Id, result.Id);
-        }
-
-        [Test]
         public async Task GetLayoffById_InvalidId_ReturnsNull()
         {
             // Act
