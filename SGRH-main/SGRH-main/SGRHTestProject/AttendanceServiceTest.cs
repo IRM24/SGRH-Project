@@ -51,6 +51,153 @@ namespace SGRHTestProject
         }
 
         [Test]
+        public async Task RegisterEntry_UserDoesNotHaveEntry_ReturnsTrue()
+        {
+            // Arrange
+            var userId = "usuario1";
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.NameIdentifier, userId)
+            }));
+
+            var currentUser = new User
+            {
+                Id = userId,
+                Dni = "202433",
+                Name = "Fabiana",
+                LastName = "Arias"
+            };
+
+            _mockUserManager.Setup(um => um.GetUserAsync(user)).ReturnsAsync(currentUser);
+            _mockUserManager.Setup(um => um.GetUserId(user)).Returns(userId);
+
+            // Act
+            var result = await _attendanceService.RegisterEntry(userId);
+
+            // Assert
+            var attendanceEntry = await _context.Attendances.FirstOrDefaultAsync(a => a.UserId == userId);
+            Assert.IsNotNull(attendanceEntry);
+            Assert.IsNotNull(attendanceEntry.EntryTime);
+        }
+
+
+        [Test]
+        public async Task RegisterEntry_UserAlreadyHasEntry_ReturnsFalse()
+        {
+            // Arrange
+            var userId = "usuario1";
+            var currentDate = DateTime.Now;
+
+            var attendance = new Attendance
+            {
+                UserId = userId,
+                EntryTime = currentDate,
+                Date = currentDate.Date
+            };
+            _context.Attendances.Add(attendance);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _attendanceService.RegisterEntry(userId);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public async Task RegisterEntry_AlreadyHasEntryForToday_ReturnsFalse()
+        {
+            // Arrange
+            var userId = "user1";
+            var user = new User { Id = userId, Dni = "202409", Name = "Ian", LastName = "Calvo" };
+            var existingAttendance = new Attendance
+            {
+                UserId = userId,
+                Date = DateTime.Today,
+                EntryTime = DateTime.Now
+            };
+
+            _context.Attendances.Add(existingAttendance);
+            await _context.SaveChangesAsync();
+
+            _mockUserManager.Setup(um => um.FindByIdAsync(userId)).ReturnsAsync(user);
+            _mockUserManager.Setup(um => um.GetUserId(It.IsAny<ClaimsPrincipal>())).Returns(userId);
+
+            // Act
+            var result = await _attendanceService.RegisterEntry(userId);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public async Task HasEntryForToday_ReturnsTrueWhenEntryExists()
+        {
+            // Arrange
+            var userId = "user3";
+            var attendance = new Attendance
+            {
+                UserId = userId,
+                Date = DateTime.Today,
+                EntryTime = DateTime.Now
+            };
+
+            _context.Attendances.Add(attendance);
+            await _context.SaveChangesAsync();
+
+            // Act
+            var result = await _attendanceService.HasEntryForToday(userId);
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [Test]
+        public async Task HasEntryForToday_ReturnsFalseWhenNoEntryExists()
+        {
+            // Arrange
+            var userId = "user4";
+
+            // No se agrega ninguna entrada en el contexto para este usuario
+
+            // Act
+            var result = await _attendanceService.HasEntryForToday(userId);
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [Test]
+        public async Task GetAttendances_UserIsAdmin_ReturnsAllAttendances()
+        {
+            // Arrange
+            var userId = "adminId";
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Role, "Admin"),
+                new Claim(ClaimTypes.NameIdentifier, userId)
+            }));
+
+            var attendances = new List<Attendance>
+            {
+                new Attendance { UserId = "empleado1", EntryTime = DateTime.Now, Date = DateTime.Today },
+                new Attendance { UserId = "empleado2", EntryTime = DateTime.Now, Date = DateTime.Today }
+            };
+
+            _context.Attendances.AddRange(attendances);
+            await _context.SaveChangesAsync();
+
+            _mockUserManager.Setup(um => um.GetUserId(user)).Returns(userId);
+
+            // Act
+            var result = await _attendanceService.GetAttendances(user);
+
+            // Assert
+            Assert.AreEqual(2, result.Count());
+        }
+
+
+        [Test]
         public async Task GetAttendances_UserIsEmpleado_ReturnsUserAttendances()
         {
             // Arrange
@@ -86,59 +233,6 @@ namespace SGRHTestProject
             // Assert
             Assert.AreEqual(2, result.Count());
             Assert.IsTrue(result.All(a => a.UserId == userId));
-        }
-
-        [Test]
-        public async Task RegisterEntry_UserDoesNotHaveEntry_ReturnsTrue()
-        {
-            // Arrange
-            var userId = "usuario1";
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, userId)
-            }));
-
-            var currentUser = new User
-            {
-                Id = userId,
-                Dni = "202433",
-                Name = "Fabiana",
-                LastName = "Arias"
-            };
-
-            _mockUserManager.Setup(um => um.GetUserAsync(user)).ReturnsAsync(currentUser);
-            _mockUserManager.Setup(um => um.GetUserId(user)).Returns(userId);
-
-            // Act
-            var result = await _attendanceService.RegisterEntry(userId);
-
-            // Assert
-            var attendanceEntry = await _context.Attendances.FirstOrDefaultAsync(a => a.UserId == userId);
-            Assert.IsNotNull(attendanceEntry);
-            Assert.IsNotNull(attendanceEntry.EntryTime);
-        }
-
-        [Test]
-        public async Task RegisterEntry_UserAlreadyHasEntry_ReturnsFalse()
-        {
-            // Arrange
-            var userId = "usuario1";
-            var currentDate = DateTime.Now;
-
-            var attendance = new Attendance
-            {
-                UserId = userId,
-                EntryTime = currentDate,
-                Date = currentDate.Date
-            };
-            _context.Attendances.Add(attendance);
-            await _context.SaveChangesAsync();
-
-            // Act
-            var result = await _attendanceService.RegisterEntry(userId);
-
-            // Assert
-            Assert.IsFalse(result);
         }
 
     }
