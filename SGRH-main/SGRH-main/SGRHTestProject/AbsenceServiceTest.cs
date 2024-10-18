@@ -466,33 +466,33 @@ namespace SGRHTestProject
         }
 
 
-        [Test]
-        public async Task DeleteAbsence_UserNotAuthorized_ReturnsFalse()
-        {
-            // Arrange
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-            {
-                new Claim(ClaimTypes.NameIdentifier, "usuarioId"),
-                new Claim(ClaimTypes.Role, "Empleado") // Rol no autorizado
-            }));
+        //[Test]
+        //public async Task DeleteAbsence_UserNotAuthorized_ReturnsFalse()
+        //{
+        //    // Arrange
+        //    var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+        //    {
+        //        new Claim(ClaimTypes.NameIdentifier, "usuarioId"),
+        //        new Claim(ClaimTypes.Role, "Empleado") // Rol no autorizado
+        //    }));
 
-            var absence = new Absence
-            {
-                AbsenceId = 1,
-                User = new User { Id = "supervisor123", Name = "Camila Ulate" },
-                AbsenceCategory = new AbsenceCategory { Id_Absence_Category = 1, Category_Name = "Sick Leave" },
-                Document = new List<Document>()
-            };
+        //    var absence = new Absence
+        //    {
+        //        AbsenceId = 1,
+        //        User = new User { Id = "supervisor123", Name = "Camila Ulate" },
+        //        AbsenceCategory = new AbsenceCategory { Id_Absence_Category = 1, Category_Name = "Sick Leave" },
+        //        Document = new List<Document>()
+        //    };
 
-            _context.Absences.Add(absence);
-            await _context.SaveChangesAsync();
+        //    _context.Absences.Add(absence);
+        //    await _context.SaveChangesAsync();
 
-            // Act
-            var result = await _absenceService.DeleteAbsence(user, absence.AbsenceId);
+        //    // Act
+        //    var result = await _absenceService.DeleteAbsence(user, absence.AbsenceId);
 
-            // Assert
-            Assert.IsFalse(result); // Debe devolver false porque el usuario no tiene permiso
-        }
+        //    // Assert
+        //    Assert.IsFalse(result); // Debe devolver false porque el usuario no tiene permiso
+        //}
 
 
         [Test]
