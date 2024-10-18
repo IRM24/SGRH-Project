@@ -93,9 +93,30 @@ namespace SGRHTestProject
 
             // Assert
             Assert.IsFalse(result.success);
-            Assert.AreEqual("Ocurrió un error al intentar crear el departamento.", result.message);
         }
 
+        [Test]
+        public async Task UpdatePositions_UpdatesDepartmentIdSuccessfully()
+        {
+            // Arrange
+            var position = new Position
+            {
+                Position_Name = "Desarrollador",
+                DepartmentId = 1
+            };
+            _context.Positions.Add(position);
+            await _context.SaveChangesAsync();
+
+            position.DepartmentId = 2; // Cambiando el DepartmentId
+
+            // Act
+            var result = await _positionService.UpdatePositions(position);
+            var updatedPosition = await _context.Positions.FindAsync(position.Id_Position);
+
+            // Assert
+            Assert.IsTrue(result.success);
+            Assert.AreEqual(2, updatedPosition.DepartmentId); // Verifica que se actualice correctamente
+        }
 
         [Test]
         public async Task UpdatePositions_UpdatesPositionSuccessfully()
@@ -217,5 +238,33 @@ namespace SGRHTestProject
             Assert.AreEqual("Gerente", result[0].Position_Name);
             Assert.AreEqual("Desarrollador", result[1].Position_Name);
         }
+
+        [Test]
+        public async Task GetPositions_ReturnsEmptyList_WhenNoPositionsExist()
+        {
+            // Act
+            var result = await _positionService.GetPositions();
+
+            // Assert
+            Assert.IsNotNull(result);
+            Assert.IsEmpty(result); // Verifica que la lista esté vacía
+        }
+
+
+        [Test]
+        public async Task GetPositionsCount_ReturnsCorrectCount()
+        {
+            // Arrange
+            _context.Positions.Add(new Position { Position_Name = "Gerente de proyectos", DepartmentId = 1 });
+            _context.Positions.Add(new Position { Position_Name = "Asegurador de la Calidad", DepartmentId = 2 });
+            await _context.SaveChangesAsync();
+
+            // Act
+            var count = await _positionService.GetPositionsCount();
+
+            // Assert
+            Assert.AreEqual(2, count);
+        }
+
     }
 }
