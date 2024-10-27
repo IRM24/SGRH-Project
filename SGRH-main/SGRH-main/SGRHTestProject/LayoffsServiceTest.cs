@@ -50,7 +50,6 @@ namespace SGRHTestProject
         [Test]
         public async Task CreateLayoff_UserSelfDismissal_ReturnsFailure()
         {
-            // Arrange
             var userId = "21";
             var model = new CreateLayoffViewModel
             {
@@ -62,30 +61,24 @@ namespace SGRHTestProject
                 RegisteredBy = userId
             };
 
-            // Act
             var result = await _layoffsService.CreateLayoff(model);
 
-            // Assert
             Assert.IsFalse(result.success);
         }
 
         [Test]
         public async Task DeleteLayoff_LayoffNotFound_ReturnsFailure()
         {
-            // Act
-            var result = await _layoffsService.DeleteLayoff(1); // Non-existent ID
+            var result = await _layoffsService.DeleteLayoff(1); 
 
-            // Assert
             Assert.IsFalse(result.success);
         }
 
         [Test]
         public async Task GetLayoffById_InvalidId_ReturnsNull()
         {
-            // Act
-            var result = await _layoffsService.GetLayoffById(2); // Non-existent ID
+            var result = await _layoffsService.GetLayoffById(2); 
 
-            // Assert
             Assert.IsNull(result);
         }
 

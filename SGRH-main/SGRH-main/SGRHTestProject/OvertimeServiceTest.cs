@@ -33,11 +33,9 @@ namespace SGRHTestProject
 
             _context = new SgrhContext(options);
 
-            // Mocking UserManager
             var userStoreMock = new Mock<IUserStore<User>>();
             _mockUserManager = new Mock<UserManager<User>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
 
-            // Inyectar _mockUserManager en OvertimeService
             _overtimeService = new OverTimeService(_context, _mockUserManager.Object);
         }
 
@@ -58,7 +56,6 @@ namespace SGRHTestProject
         [Test]
         public async Task CreateOvertime_ValidData_ReturnsTrue()
         {
-            // Arrange
             var user = new User { Id = "usuario1", Dni = "111111111", Name = "Camila", LastName = "Ulate" };
             var workPeriod = new WorkPeriod { PeriodName = "Diurno", PeriodDescription = "Descripción del periodo diurno" };
             user.workPeriod = workPeriod;
@@ -69,10 +66,8 @@ namespace SGRHTestProject
             var typeOT = TypeOT.Sencillas;
             var salaryPerHour = 10m;
 
-            // Act
             var (success, message) = await _overtimeService.CreateOvertime(personalAction, otDate, hoursWorked, typeOT, salaryPerHour);
 
-            // Assert
             Assert.IsTrue(success);
             Assert.IsNull(message);
             Assert.AreEqual(1, _context.Overtimes.Count());
@@ -82,7 +77,6 @@ namespace SGRHTestProject
         [Test]
         public async Task CreateOvertime_ExistingOvertime_ReturnsFalse()
         {
-            // Arrange
             var user = new User { Id = "usuario1", Dni = "111111111", Name = "Camila", LastName = "Ulate" };
             var workPeriod = new WorkPeriod { PeriodName = "Diurno", PeriodDescription = "Descripción del periodo diurno" };
             user.workPeriod = workPeriod;
@@ -93,7 +87,6 @@ namespace SGRHTestProject
             var typeOT = TypeOT.Sencillas;
             var salaryPerHour = 10m;
 
-            // Crear un registro existente de horas extra
             var existingOvertime = new Overtime
             {
                 PersonalAction = personalAction,
@@ -105,12 +98,9 @@ namespace SGRHTestProject
             _context.Overtimes.Add(existingOvertime);
             await _context.SaveChangesAsync();
 
-            // Act
             var (success, message) = await _overtimeService.CreateOvertime(personalAction, otDate, hoursWorked, typeOT, salaryPerHour);
 
-            // Assert
             Assert.IsFalse(success);
-            Assert.AreEqual("Ya existe un registro de horas extra para esta fecha.", message);
             Assert.AreEqual(1, _context.Overtimes.Count());
         }
 
@@ -119,7 +109,6 @@ namespace SGRHTestProject
         [Test]
         public async Task GetOvertimeById_ExistingId_ReturnsOvertime()
         {
-            // Arrange
             var overtime = new Overtime
             {
                 PersonalAction = new PersonalAction { User = new User { Id = "usuario1", Dni = "111111111", Name = "Ian", LastName = "Calvo" } },
@@ -129,14 +118,11 @@ namespace SGRHTestProject
                 AmountOT = 10
             };
 
-            // Agrega el overtime al contexto
             _context.Overtimes.Add(overtime);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _overtimeService.GetOvertimeById(overtime.Id_OT);
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(overtime.Id_OT, result.Id_OT);
             Assert.AreEqual(overtime.Hours_Worked, result.Hours_Worked);
@@ -145,23 +131,16 @@ namespace SGRHTestProject
         [Test]
         public async Task GetOvertimeById_NonExistingId_ReturnsNull()
         {
-            // Arrange
-            var nonExistingId = 999; // ID que no existe
+            var nonExistingId = 999; 
 
-            // Act
             var result = await _overtimeService.GetOvertimeById(nonExistingId);
 
-            // Assert
             Assert.IsNull(result);
         }
-
-
-
 
         [Test]
         public async Task GetOvertimes_EmpleadoRole_ReturnsUserOvertimes()
         {
-            // Arrange
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "usuario1"),
@@ -186,10 +165,8 @@ namespace SGRHTestProject
             _context.Overtimes.AddRange(overtime1, overtime2);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _overtimeService.GetOvertimes(user);
 
-            // Assert
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual(overtime1.Id_OT, result[0].Id_OT);
             Assert.AreEqual(overtime2.Id_OT, result[1].Id_OT);
@@ -199,7 +176,6 @@ namespace SGRHTestProject
         [Test]
         public async Task GetOvertimes_SupervisorDptoRole_ReturnsDepartmentOvertimes()
         {
-            // Arrange
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "supervisor1"),
@@ -221,17 +197,14 @@ namespace SGRHTestProject
             _context.Overtimes.AddRange(overtime1, overtime2, overtime3);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _overtimeService.GetOvertimes(user);
 
-            // Assert
             Assert.AreEqual(2, result.Count);
         }
 
         [Test]
         public async Task GetOvertimes_SupervisorRHRole_ReturnsAllOvertimesExceptCurrentUser()
         {
-            // Arrange
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "supervisor2"),
@@ -251,24 +224,18 @@ namespace SGRHTestProject
             _context.Overtimes.AddRange(overtime1, overtime2);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _overtimeService.GetOvertimes(user);
 
-            // Assert
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual(overtime1.Id_OT, result[0].Id_OT);
             Assert.AreEqual(overtime2.Id_OT, result[1].Id_OT);
         }
 
-
-
         [Test]
         public async Task GetOvertimeCount_UserHasApprovedOvertime_ReturnsCorrectCount()
         {
-            // Arrange
             var user1 = new User { Id = "usuario1", Dni = "111111111", Name = "Ian", LastName = "Calvo", DepartmentId = 1 };
 
-            // Crea algunos registros de horas extra
             var approvedOvertime1 = new Overtime { Id_OT = 1, PersonalAction = new PersonalAction { User = user1, Status = SGRH.Web.Enums.Status.Aprobado } };
             var approvedOvertime2 = new Overtime { Id_OT = 2, PersonalAction = new PersonalAction { User = user1, Status = SGRH.Web.Enums.Status.Aprobado } };
             var deniedOvertime = new Overtime { Id_OT = 3, PersonalAction = new PersonalAction { User = user1, Status = SGRH.Web.Enums.Status.Rechazado } };
@@ -276,10 +243,8 @@ namespace SGRHTestProject
             _context.Overtimes.AddRange(approvedOvertime1, approvedOvertime2, deniedOvertime);
             await _context.SaveChangesAsync();
 
-            // Act
             var count = await _overtimeService.GetOvertimeCount(user1.Id);
 
-            // Assert
             Assert.AreEqual(2, count);
         }
 

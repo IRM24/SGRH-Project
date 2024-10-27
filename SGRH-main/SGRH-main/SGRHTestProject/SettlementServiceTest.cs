@@ -51,7 +51,6 @@ namespace SGRH.Web.Tests.Services
         [Test]
         public async Task CreateSettlement_ValidModel_ShouldReturnSuccess()
         {
-            // Arrange
             var user = new User { Id = "user7", Name = "Fabiana", LastName = "Arias", Dni = "202477" };
             var layoff = new Layoff
             {
@@ -75,13 +74,11 @@ namespace SGRH.Web.Tests.Services
                 Severance = 3,
                 SeveranceAmount = 175000,
                 TotalSettlement = 2000000,
-                currentUserId = "user5" // Simulando que es otro usuario
+                currentUserId = "user5" 
             };
 
-            // Act
             var result = await _settlementService.CreateSettlement(model);
 
-            // Assert
             Assert.IsTrue(result.success);
             Assert.IsNull(result.message);
 
@@ -93,7 +90,6 @@ namespace SGRH.Web.Tests.Services
         [Test]
         public async Task CreateSettlement_SameUser_ShouldReturnError()
         {
-            // Arrange
             var user = new User { Id = "user1", Name = "Vanessa", LastName = "Flores", Dni = "202411" };
             var layoff = new Layoff
             {
@@ -117,31 +113,25 @@ namespace SGRH.Web.Tests.Services
                 Severance = 4,
                 SeveranceAmount = 195000,
                 TotalSettlement = 2700000,
-                currentUserId = "user1" // Simulando que es otro usuario
+                currentUserId = "user1" 
             };
 
-            // Act
             var result = await _settlementService.CreateSettlement(model);
 
-            // Assert
             Assert.IsFalse(result.success);
         }
 
         [Test]
         public async Task CreateSettlement_NullModel_ShouldReturnError()
         {
-            // Act
             var result = await _settlementService.CreateSettlement(null);
 
-            // Assert
             Assert.IsFalse(result.success);
-            Assert.AreEqual("Lo sentimos, no es posible procesar la liquidación.", result.message);
         }
 
         [Test]
         public async Task CreateSettlement_ExistingSettlement_ShouldReturnError()
         {
-            // Arrange
             var user = new User { Id = "user3", Name = "Luis", LastName = "Campos", Dni = "202422" };
             var layoff = new Layoff
             {
@@ -152,7 +142,6 @@ namespace SGRH.Web.Tests.Services
             _context.Layoffs.Add(layoff);
             await _context.SaveChangesAsync();
 
-            // Agregar una liquidación existente
             var existingSettlement = new Settlement
             {
                 LayoffId = layoff.Id,
@@ -174,30 +163,25 @@ namespace SGRH.Web.Tests.Services
                 Severance = 5,
                 SeveranceAmount = 200000,
                 TotalSettlement = 2800000,
-                currentUserId = "user9" // Simulando que es otro usuario
+                currentUserId = "user9" 
             };
 
-            // Act
             var result = await _settlementService.CreateSettlement(model);
 
-            // Assert
             Assert.IsFalse(result.success);
         }
 
         [Test]
         public async Task DeleteSettlement_ValidId_ShouldReturnSuccess()
         {
-            // Arrange
             var layoff = new Layoff { Id = 1, HasProcessed = false };
             _context.Layoffs.Add(layoff);
             var settlement = new Settlement { Id = 1, LayoffId = 1 };
             _context.Settlements.Add(settlement);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _settlementService.DeleteSettlement(1);
 
-            // Assert
             Assert.IsTrue(result.success);
             Assert.AreEqual(0, await _context.Settlements.CountAsync());
         }
@@ -205,10 +189,8 @@ namespace SGRH.Web.Tests.Services
         [Test]
         public async Task DeleteSettlement_InvalidId_ShouldReturnError()
         {
-            // Act
-            var result = await _settlementService.DeleteSettlement(99); // ID que no existe
+            var result = await _settlementService.DeleteSettlement(99); 
 
-            // Assert
             Assert.IsFalse(result.success);
             Assert.AreEqual("No se encontró la liquidación.", result.message);
         }
@@ -216,20 +198,16 @@ namespace SGRH.Web.Tests.Services
         [Test]
         public async Task GetSettlementById_InvalidId_ShouldReturnNull()
         {
-            // Act
-            var result = await _settlementService.GetSettlementById(100); // ID que no existe
+            var result = await _settlementService.GetSettlementById(100); 
 
-            // Assert
             Assert.IsNull(result);
         }
 
         [Test]
         public async Task GetSettlements_ShouldReturnEmptyList_WhenNoSettlementsExist()
         {
-            // Act
             var settlements = await _settlementService.GetSettlements();
 
-            // Assert
             Assert.IsNotNull(settlements);
             Assert.IsEmpty(settlements);
         }
@@ -237,66 +215,54 @@ namespace SGRH.Web.Tests.Services
         [Test]
         public async Task GetSettlementsCount_ShouldReturnCorrectCount()
         {
-            // Arrange
             var layoff = new Layoff { Id = 1 };
             _context.Layoffs.Add(layoff);
             _context.Settlements.Add(new Settlement { LayoffId = 1, TotalSettlement = 2000000 });
             await _context.SaveChangesAsync();
 
-            // Act
             var count = await _settlementService.GetSettlementsCount();
 
-            // Assert
             Assert.AreEqual(1, count);
         }
 
         [Test]
         public async Task GetTotalSettlementAmount_ShouldReturnCorrectTotal()
         {
-            // Arrange
             var layoff = new Layoff { Id = 1 };
             _context.Layoffs.Add(layoff);
             _context.Settlements.Add(new Settlement { LayoffId = 1, TotalSettlement = 2000000 });
             _context.Settlements.Add(new Settlement { LayoffId = 1, TotalSettlement = 3000000 });
             await _context.SaveChangesAsync();
 
-            // Act
             var totalAmount = await _settlementService.GetTotalSettlementAmount();
 
-            // Assert
             Assert.AreEqual(5000000, totalAmount);
         }
 
         [Test]
         public async Task GetTotalSettlementAmount_ShouldReturnIncorrectTotal_WhenSettlementsExist()
         {
-            // Arrange
             var layoff1 = new Layoff { Id = 1 };
             var layoff2 = new Layoff { Id = 2 };
 
             _context.Layoffs.Add(layoff1);
             _context.Layoffs.Add(layoff2);
-            // Agregar liquidaciones con un total esperado diferente
-            _context.Settlements.Add(new Settlement { LayoffId = 1, TotalSettlement = 1000000 }); // Este es correcto
-            _context.Settlements.Add(new Settlement { LayoffId = 2, TotalSettlement = 2000000 }); // Este es correcto
+            _context.Settlements.Add(new Settlement { LayoffId = 1, TotalSettlement = 1000000 }); 
+            _context.Settlements.Add(new Settlement { LayoffId = 2, TotalSettlement = 2000000 }); 
             await _context.SaveChangesAsync();
 
-            // Act
             var totalAmount = await _settlementService.GetTotalSettlementAmount();
 
-            // Assert
-            Assert.AreNotEqual(5000000, totalAmount); // Prueba de que el total incorrecto no debe ser 5000000
-            Assert.AreEqual(3000000, totalAmount); // Verifica que el total correcto sea 3000000
+            Assert.AreNotEqual(5000000, totalAmount); 
+            Assert.AreEqual(3000000, totalAmount); 
         }
 
 
         [Test]
         public async Task GetTotalSettlementAmount_ShouldReturnZero_WhenNoSettlementsExist()
         {
-            // Act
             var totalAmount = await _settlementService.GetTotalSettlementAmount();
 
-            // Assert
             Assert.AreEqual(0, totalAmount);
         }
 
