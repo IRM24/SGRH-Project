@@ -59,7 +59,7 @@ namespace SGRHTestProject
             };
 
             var (success, message) = await _departmentService.CreateDepartment(department);
-            var createdDepartment = await _context.Departments.FirstOrDefaultAsync(d => d.Department_Name == "Finance");
+            var createdDepartment = await _context.Departments.FirstOrDefaultAsync(d => d.Department_Name == "Finanzas");
 
             Assert.IsTrue(success);
             Assert.IsNotNull(createdDepartment);  
