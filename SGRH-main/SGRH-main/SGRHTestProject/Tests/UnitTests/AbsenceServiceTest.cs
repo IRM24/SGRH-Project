@@ -29,11 +29,9 @@ namespace SGRHTestProject.Tests.UnitTests
 
             _context = new SgrhContext(options);
 
-            // Mocking UserManager
             var userStoreMock = new Mock<IUserStore<User>>();
             _mockUserManager = new Mock<UserManager<User>>(userStoreMock.Object, null, null, null, null, null, null, null, null);
 
-            // Inyectar _mockUserManager en AbsenceService
             _absenceService = new AbsenceService(_context, _mockUserManager.Object);
         }
 
@@ -54,7 +52,6 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task GetAbsenceCategories_ReturnsCategories()
         {
-            // Arrange
             var categories = new List<AbsenceCategory>
             {
                 new AbsenceCategory { Id_Absence_Category = 1, Category_Name = "Enfermedad" },
@@ -64,10 +61,8 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.AbsenceCategories.AddRange(categories);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.GetAbsenceCategories();
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(2, result.Count);
             Assert.AreEqual("Enfermedad", result[0].Category_Name);
@@ -76,10 +71,8 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task GetAbsenceCategories_EmptyDatabase_ReturnsEmptyList()
         {
-            // Act
             var result = await _absenceService.GetAbsenceCategories();
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.IsEmpty(result);
         }
@@ -87,15 +80,12 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task GetAbsenceCategories_AddOneCategory_ReturnsSingleCategory()
         {
-            // Arrange
             var category = new AbsenceCategory { Id_Absence_Category = 1, Category_Name = "Enfermedad" };
             _context.AbsenceCategories.Add(category);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.GetAbsenceCategories();
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("Enfermedad", result[0].Category_Name);
@@ -104,7 +94,6 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task GetAbsenceCategories_AddMultipleCategories_ReturnsAllCategories()
         {
-            // Arrange
             var categories = new List<AbsenceCategory>
             {
                 new AbsenceCategory { Id_Absence_Category = 1, Category_Name = "Enfermedad" },
@@ -115,10 +104,8 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.AbsenceCategories.AddRange(categories);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.GetAbsenceCategories();
 
-            // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(3, result.Count);
             Assert.AreEqual("Enfermedad", result[0].Category_Name);
@@ -130,7 +117,6 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task GetAbsences_UserIsEmpleado_ReturnsOnlyUserAbsences()
         {
-            // Arrange
             var userId = "usuario123";
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
@@ -138,13 +124,12 @@ namespace SGRHTestProject.Tests.UnitTests
                 new Claim(ClaimTypes.NameIdentifier, userId)
             }));
 
-            // Proporcionar valores para las propiedades requeridas
-            var currentUser = new User
-            {
-                Id = userId,
-                Dni = "123456789",
-                Name = "Ian",
-                LastName = "Calvo"
+            var currentUser = new User 
+            { 
+                Id = userId, 
+                Dni = "123456789", 
+                Name = "Ian", 
+                LastName = "Calvo" 
             };
 
             var absences = new List<Absence>
@@ -170,10 +155,8 @@ namespace SGRHTestProject.Tests.UnitTests
             _mockUserManager.Setup(um => um.GetUserAsync(user)).ReturnsAsync(currentUser);
             _mockUserManager.Setup(um => um.GetRolesAsync(currentUser)).ReturnsAsync(new List<string> { "Empleado" });
 
-            // Act
             var result = await _absenceService.GetAbsences(user);
 
-            // Assert
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("Enfermedad", result.First().AbsenceCategory.Category_Name);
         }
@@ -184,7 +167,6 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task GetAbsences_UserIsSupervisorDpto_ReturnsDepartmentAbsences()
         {
-            // Arrange
             var currentUser = new User { Id = "supervisorId", Dni = "111111111", Name = "Fabiana", LastName = "Arias", DepartmentId = 1 };
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.Role, "SupervisorDpto"), new Claim(ClaimTypes.NameIdentifier, currentUser.Id) }));
 
@@ -218,10 +200,8 @@ namespace SGRHTestProject.Tests.UnitTests
             _mockUserManager.Setup(um => um.GetUserAsync(user)).ReturnsAsync(currentUser);
             _mockUserManager.Setup(um => um.GetRolesAsync(currentUser)).ReturnsAsync(new List<string> { "SupervisorDpto" });
 
-            // Act
             var result = await _absenceService.GetAbsences(user);
 
-            // Assert
             Assert.AreEqual(1, result.Count);
             Assert.AreEqual("Enfermedad", result.First().AbsenceCategory.Category_Name);
         }
@@ -231,7 +211,6 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task GetAbsences_UserIsNotEmpleadoOrSupervisor_ReturnsAllAbsences()
         {
-            // Arrange
             var currentUser = new User { Id = "adminId", Dni = "111111111", Name = "Fabiana", LastName = "Arias" };
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] { new Claim(ClaimTypes.NameIdentifier, currentUser.Id) }));
 
@@ -264,19 +243,14 @@ namespace SGRHTestProject.Tests.UnitTests
             _mockUserManager.Setup(um => um.GetUserAsync(user)).ReturnsAsync(currentUser);
             _mockUserManager.Setup(um => um.GetRolesAsync(currentUser)).ReturnsAsync(new List<string>());
 
-            // Act
             var result = await _absenceService.GetAbsences(user);
 
-            // Assert
             Assert.AreEqual(2, result.Count);
         }
-
-
 
         [Test]
         public async Task RegisterAbsence_ValidData_ReturnsTrue()
         {
-            // Arrange
             var userId = "usuario123";
             var absenceModel = new AbsenceViewModel
             {
@@ -297,10 +271,8 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.AbsenceCategories.Add(absenceCategory);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.RegisterAbsence(userId, absenceModel, documentContents, documentFileNames, documentContentTypes);
 
-            // Assert
             Assert.IsTrue(result);
             Assert.AreEqual(1, _context.Absences.Count());
         }
@@ -310,7 +282,6 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task RegisterAbsence_UserNotFound_ReturnsFalse()
         {
-            // Arrange
             var userId = "usuarioInvalido";
             var absenceModel = new AbsenceViewModel
             {
@@ -324,10 +295,8 @@ namespace SGRHTestProject.Tests.UnitTests
             var documentFileNames = new List<string> { "documento1.pdf" };
             var documentContentTypes = new List<string> { "aplicacion/pdf" };
 
-            // Act
             var result = await _absenceService.RegisterAbsence(userId, absenceModel, documentContents, documentFileNames, documentContentTypes);
 
-            // Assert
             Assert.IsFalse(result);
             Assert.AreEqual(0, _context.Absences.Count());
         }
@@ -337,7 +306,6 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task UpdateAbsence_ValidData_ReturnsTrue()
         {
-            // Arrange
             var userId = "usuario123";
             var absenceModel = new AbsenceViewModel
             {
@@ -345,7 +313,7 @@ namespace SGRHTestProject.Tests.UnitTests
                 StartDate = DateTime.Now,
                 EndDate = DateTime.Now.AddDays(5),
                 Comments = "Actualizacion enfermedad",
-                Documentation = new List<IFormFile> // Simular los archivos que se están subiendo
+                Documentation = new List<IFormFile> 
         {
             new FormFile(new MemoryStream(new byte[] { 0x01, 0x02, 0x03 }), 0, 3, "Data", "documentoActualizado.pdf")
             {
@@ -374,10 +342,8 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.Absences.Add(absence);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.UpdateAbsence(userId, absence.AbsenceId, absenceModel, documentContents: null, documentFileNames: null, documentContentTypes: null);
 
-            // Assert
             Assert.IsTrue(result);
             var updatedAbsence = await _context.Absences.Include(a => a.Document).FirstOrDefaultAsync(a => a.AbsenceId == absence.AbsenceId);
             Assert.IsNotNull(updatedAbsence);
@@ -392,7 +358,6 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task UpdateAbsence_AbsenceNotFound_ReturnsFalse()
         {
-            // Arrange
             var userId = "usuario123";
             var absenceModel = new AbsenceViewModel
             {
@@ -406,10 +371,8 @@ namespace SGRHTestProject.Tests.UnitTests
             var documentFileNames = new List<string> { "documentoActualizado.pdf" };
             var documentContentTypes = new List<string> { "application/pdf" };
 
-            // Act
             var result = await _absenceService.UpdateAbsence(userId, 999, absenceModel, documentContents, documentFileNames, documentContentTypes); // Id de ausencia inexistente
 
-            // Assert
             Assert.IsFalse(result);
         }
 
@@ -418,12 +381,11 @@ namespace SGRHTestProject.Tests.UnitTests
         [Test]
         public async Task DeleteAbsence_ValidUserAndAbsenceId_ReturnsTrue()
         {
-            // Arrange
             var userId = "supervisor123";
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, userId),
-                new Claim(ClaimTypes.Role, "SupervisorRh") // Rol autorizado
+                new Claim(ClaimTypes.Role, "SupervisorRh") 
             }));
 
             var absence = new Absence
@@ -437,68 +399,30 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.Absences.Add(absence);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.DeleteAbsence(user, absence.AbsenceId);
 
-            // Assert
             Assert.IsTrue(result);
             var deletedAbsence = await _context.Absences.FindAsync(absence.AbsenceId);
-            Assert.IsNull(deletedAbsence); // La ausencia debe haber sido eliminada
+            Assert.IsNull(deletedAbsence); 
         }
-
-
 
         [Test]
         public async Task DeleteAbsence_AbsenceDoesNotExist_ReturnsFalse()
         {
-            // Arrange
             var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
             {
                 new Claim(ClaimTypes.NameIdentifier, "usuarioId"),
                 new Claim(ClaimTypes.Role, "SupervisorRh")
             }));
 
-            // Act
-            var result = await _absenceService.DeleteAbsence(user, 999); // ID que no existe
+            var result = await _absenceService.DeleteAbsence(user, 999); 
 
-            // Assert
-            Assert.IsFalse(result); // Debe devolver false
+            Assert.IsFalse(result); 
         }
-
-
-        //[Test]
-        //public async Task DeleteAbsence_UserNotAuthorized_ReturnsFalse()
-        //{
-        //    // Arrange
-        //    var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
-        //    {
-        //        new Claim(ClaimTypes.NameIdentifier, "usuarioId"),
-        //        new Claim(ClaimTypes.Role, "Empleado") // Rol no autorizado
-        //    }));
-
-        //    var absence = new Absence
-        //    {
-        //        AbsenceId = 1,
-        //        User = new User { Id = "supervisor123", Name = "Camila Ulate" },
-        //        AbsenceCategory = new AbsenceCategory { Id_Absence_Category = 1, Category_Name = "Sick Leave" },
-        //        Document = new List<Document>()
-        //    };
-
-        //    _context.Absences.Add(absence);
-        //    await _context.SaveChangesAsync();
-
-        //    // Act
-        //    var result = await _absenceService.DeleteAbsence(user, absence.AbsenceId);
-
-        //    // Assert
-        //    Assert.IsFalse(result); // Debe devolver false porque el usuario no tiene permiso
-        //}
-
 
         [Test]
         public async Task GetAbsenceById_ValidId_ReturnsAbsence()
         {
-            // Arrange
             var absenceId = 1;
             var user = new User { Id = "usuario123", Name = "Camila", LastName = "Ulate", Dni = "123456789" };
             var absenceCategory = new AbsenceCategory { Id_Absence_Category = 1, Category_Name = "Enfermedad" };
@@ -519,20 +443,16 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.Absences.Add(absence);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.GetAbsenceById(absenceId);
 
-            // Assert
-            Assert.IsNotNull(result); // Verifica que se haya encontrado una ausencia
-            Assert.AreEqual(absenceId, result.AbsenceId); // Verifica que el ID de la ausencia sea correcto
+            Assert.IsNotNull(result); 
+            Assert.AreEqual(absenceId, result.AbsenceId); 
         }
-
 
 
         [Test]
         public async Task DownloadDocument_ValidId_ReturnsDocumentViewModel()
         {
-            // Arrange
             var documentId = 1;
             var document = new Document
             {
@@ -546,24 +466,19 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.Document.Add(document);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.DownloadDocument(documentId);
 
-            // Assert
-            Assert.IsNotNull(result); // Verifica que se haya encontrado un documento
-            Assert.AreEqual(documentId, result.Id); // Verifica que el ID del documento sea correcto
-            Assert.AreEqual("documentoPrueba.pdf", result.FileName); // Verifica que el nombre del archivo sea correcto
+            Assert.IsNotNull(result);
+            Assert.AreEqual(documentId, result.Id); 
+            Assert.AreEqual("documentoPrueba.pdf", result.FileName); 
         }
-
-
-
 
         [Test]
         public async Task GetAbsencesByUser_ExistingUserId_ReturnsUserAbsences()
         {
             var user1 = new User { Id = "usuario1", Name = "Camila", LastName = "Ulate", Dni = "123456789" };
             var user2 = new User { Id = "usuario2", Name = "Fabiana", LastName = "Arias", Dni = "111111111" };
-            // Arrange
+
             var absence1 = new Absence
             {
                 AbsenceId = 1,
@@ -597,12 +512,10 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.Absences.AddRange(absence1, absence2);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _absenceService.GetAbsencesByUser(user1.Id);
 
-            // Assert
-            Assert.AreEqual(2, result.Count); // Verifica que se devuelvan las dos ausencias
-            Assert.AreEqual("Enfermedad", result[0].AbsenceCategory.Category_Name); // Verifica la categoría de la primera ausencia
+            Assert.AreEqual(2, result.Count); 
+            Assert.AreEqual("Enfermedad", result[0].AbsenceCategory.Category_Name); 
         }
 
 

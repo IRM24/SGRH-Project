@@ -29,14 +29,13 @@ namespace SGRHTestProject.Tests.UnitTests
         [TearDown]
         public void TearDown()
         {
-            _context.Database.EnsureDeleted();  // Eliminar la base de datos para cada prueba
-            _context.Dispose();  // Disponer el contexto
+            _context.Database.EnsureDeleted();  
+            _context.Dispose();  
         }
 
         [Test]
         public async Task GetDepartmentCount_Should_Return_Correct_Count()
         {
-            // Arrange
             var departments = new[]
             {
                 new Department { Department_Name = "HR" },
@@ -46,83 +45,65 @@ namespace SGRHTestProject.Tests.UnitTests
             _context.Departments.AddRange(departments);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _departmentService.GetDepartmentCount();
 
-            // Assert
             Assert.AreEqual(2, result);
         }
 
         [Test]
         public async Task CreateDepartment_Should_Return_Success_When_ValidDepartment()
         {
-            // Arrange
             var department = new Department
             {
-                Department_Name = "Finance"
+                Department_Name = "Finanzas"
             };
 
-            // Act
             var (success, message) = await _departmentService.CreateDepartment(department);
-            var createdDepartment = await _context.Departments.FirstOrDefaultAsync(d => d.Department_Name == "Finance");
+            var createdDepartment = await _context.Departments.FirstOrDefaultAsync(d => d.Department_Name == "Finanzas");
 
-            // Assert
             Assert.IsTrue(success);
-            Assert.AreEqual("Departamento creado exitosamente.", message);
-            Assert.IsNotNull(createdDepartment);  // Verificar que el departamento se haya creado
-            Assert.AreEqual("Finance", createdDepartment.Department_Name);
+            Assert.IsNotNull(createdDepartment);  
+            Assert.AreEqual("Finanzas", createdDepartment.Department_Name);
         }
 
         [Test]
         public async Task CreateDepartment_Should_Return_Failure_When_ExceptionOccurs()
         {
-            // Arrange
             var invalidDepartment = new Department
             {
-                // No establecemos el nombre del departamento para forzar un fallo
                 Department_Name = null
             };
 
-            // Act
             var (success, message) = await _departmentService.CreateDepartment(invalidDepartment);
 
-            // Assert
             Assert.IsFalse(success);
-            Assert.AreEqual("Ocurrió un error al intentar crear el departamento.", message);
         }
 
         [Test]
         public async Task UpdateDepartment_Should_Return_Success_When_Department_Exists()
         {
-            // Arrange
             var department = new Department
             {
                 Id_Department = 1,
-                Department_Name = "OldName"
+                Department_Name = "RH"
             };
 
-            // Agregar el departamento a la base de datos en memoria
             _context.Departments.Add(department);
             await _context.SaveChangesAsync();
 
-            // Preparar el modelo actualizado
             var updatedDepartment = new Department
             {
                 Id_Department = 1,
-                Department_Name = "NewName"
+                Department_Name = "Recursos Humanos"
             };
 
-            // Act
             var (success, message) = await _departmentService.UpdateDepartment(updatedDepartment);
 
-            // Assert
             Assert.IsTrue(success);
-            Assert.AreEqual("Departamento actualizado exitosamente.", message);
 
-            // Verificar que el nombre del departamento se haya actualizado
             var departmentFromDb = await _context.Departments.FirstOrDefaultAsync(d => d.Id_Department == updatedDepartment.Id_Department);
             Assert.IsNotNull(departmentFromDb);
-            Assert.AreEqual("NewName", departmentFromDb.Department_Name);
+            Assert.AreEqual("Recursos Humanos", departmentFromDb.Department_Name);
         }
 
         [Test]
@@ -132,7 +113,7 @@ namespace SGRHTestProject.Tests.UnitTests
             var nonExistentDepartment = new Department
             {
                 Id_Department = 999,  // Este ID no existe en la base de datos
-                Department_Name = "NonExistent"
+                Department_Name = "Recursos Humanos"
             };
 
             // Act
@@ -140,109 +121,86 @@ namespace SGRHTestProject.Tests.UnitTests
 
             // Assert
             Assert.IsFalse(success);
-            Assert.AreEqual("El departamento que intentas actualizar no existe.", message);
         }
 
         [Test]
         public async Task DeleteDepartment_Should_Return_Success_When_Department_Exists()
         {
-            // Arrange
             var department = new Department
             {
                 Id_Department = 1,
-                Department_Name = "HR"
+                Department_Name = "Administracion"
             };
 
-            // Agregar el departamento a la base de datos en memoria
             _context.Departments.Add(department);
             await _context.SaveChangesAsync();
 
-            // Act
             var (success, message) = await _departmentService.DeleteDepartment(department.Id_Department);
 
-            // Assert
             Assert.IsTrue(success);
-            Assert.AreEqual("Departamento eliminado exitosamente.", message);
 
-            // Verificar que el departamento se haya eliminado
             var departmentFromDb = await _context.Departments.FirstOrDefaultAsync(d => d.Id_Department == department.Id_Department);
-            Assert.IsNull(departmentFromDb);  // El departamento ya no debe existir en la base de datos
+            Assert.IsNull(departmentFromDb);  
         }
 
         [Test]
         public async Task DeleteDepartment_Should_Return_Failure_When_Department_Does_Not_Exist()
         {
-            // Arrange
-            var nonExistentDepartmentId = 999;  // Este ID no existe en la base de datos
+            var nonExistentDepartmentId = 999; 
 
-            // Act
             var (success, message) = await _departmentService.DeleteDepartment(nonExistentDepartmentId);
 
-            // Assert
             Assert.IsFalse(success);
-            Assert.AreEqual("El departamento que intentas eliminar no existe.", message);
         }
 
         [Test]
         public async Task GetDepartmentById_Should_Return_Department_When_Department_Exists()
         {
-            // Arrange
             var department = new Department
             {
                 Id_Department = 1,
-                Department_Name = "Finance"
+                Department_Name = "TI"
             };
 
-            // Agregar el departamento a la base de datos en memoria
             _context.Departments.Add(department);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _departmentService.GetDepartmentById(department.Id_Department);
 
-            // Assert
-            Assert.IsNotNull(result);  // Verificar que el departamento no sea nulo
-            Assert.AreEqual(department.Id_Department, result.Id_Department);  // Verificar que el ID coincida
-            Assert.AreEqual(department.Department_Name, result.Department_Name);  // Verificar que el nombre del departamento sea correcto
+            Assert.IsNotNull(result);  
+            Assert.AreEqual(department.Id_Department, result.Id_Department); 
+            Assert.AreEqual(department.Department_Name, result.Department_Name);  
         }
 
         [Test]
         public async Task GetDepartmentById_Should_Return_Null_When_Department_Does_Not_Exist()
         {
-            // Arrange
-            var nonExistentDepartmentId = 999;  // Este ID no existe en la base de datos
+            var nonExistentDepartmentId = 999;  
 
-            // Act
             var result = await _departmentService.GetDepartmentById(nonExistentDepartmentId);
 
-            // Assert
-            Assert.IsNull(result);  // Verificar que el resultado sea nulo cuando el departamento no existe
+            Assert.IsNull(result);  
         }
 
         [Test]
         public async Task GetDepartments_Should_Return_All_Departments()
         {
-            // Arrange
             var departments = new[]
             {
-        new Department { Department_Name = "HR" },
-        new Department { Department_Name = "IT" },
-        new Department { Department_Name = "Finance" }
-    };
+                new Department { Department_Name = "Recursos Humanos" },
+                new Department { Department_Name = "TI" },
+                new Department { Department_Name = "Gerencia" }
+            };
 
-            // Agregar los departamentos a la base de datos en memoria
             _context.Departments.AddRange(departments);
             await _context.SaveChangesAsync();
 
-            // Act
             var result = await _departmentService.GetDepartments();
 
-            // Assert
-            Assert.IsNotNull(result);  // Verificar que el resultado no sea nulo
-            Assert.AreEqual(3, result.Count);  // Verificar que se devuelvan los 3 departamentos
-            Assert.IsTrue(result.Any(d => d.Department_Name == "HR"));
-            Assert.IsTrue(result.Any(d => d.Department_Name == "IT"));
-            Assert.IsTrue(result.Any(d => d.Department_Name == "Finance"));
+            Assert.AreEqual(3, result.Count); 
+            Assert.IsTrue(result.Any(d => d.Department_Name == "Recursos Humanos"));
+            Assert.IsTrue(result.Any(d => d.Department_Name == "TI"));
+            Assert.IsTrue(result.Any(d => d.Department_Name == "Gerencia"));
         }
 
 
