@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace SGRHTestProject
+namespace SGRHTestProject.Tests.UnitTests
 {
     [TestFixture]
     public class AbsenceServiceTests
@@ -132,34 +132,34 @@ namespace SGRHTestProject
         {
             // Arrange
             var userId = "usuario123";
-            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[] 
-            { 
-                new Claim(ClaimTypes.Role, "Empleado"), 
-                new Claim(ClaimTypes.NameIdentifier, userId) 
+            var user = new ClaimsPrincipal(new ClaimsIdentity(new Claim[]
+            {
+                new Claim(ClaimTypes.Role, "Empleado"),
+                new Claim(ClaimTypes.NameIdentifier, userId)
             }));
 
             // Proporcionar valores para las propiedades requeridas
-            var currentUser = new User 
-            { 
-                Id = userId, 
-                Dni = "123456789", 
-                Name = "Ian", 
-                LastName = "Calvo" 
+            var currentUser = new User
+            {
+                Id = userId,
+                Dni = "123456789",
+                Name = "Ian",
+                LastName = "Calvo"
             };
 
             var absences = new List<Absence>
             {
-                new Absence 
-                { 
-                    AbsenceId = 1, 
-                    User = currentUser, 
-                    AbsenceCategory = new AbsenceCategory { Category_Name = "Enfermedad" } 
+                new Absence
+                {
+                    AbsenceId = 1,
+                    User = currentUser,
+                    AbsenceCategory = new AbsenceCategory { Category_Name = "Enfermedad" }
                 },
-                new Absence 
-                { 
-                    AbsenceId = 2, 
-                    User = new User { Id = "otroUsuario", Dni = "987654321", Name = "Camila", LastName = "Ulate" }, 
-                    AbsenceCategory = new AbsenceCategory { Category_Name = "Vacaciones" } 
+                new Absence
+                {
+                    AbsenceId = 2,
+                    User = new User { Id = "otroUsuario", Dni = "987654321", Name = "Camila", LastName = "Ulate" },
+                    AbsenceCategory = new AbsenceCategory { Category_Name = "Vacaciones" }
                 }
             };
 
@@ -514,7 +514,7 @@ namespace SGRHTestProject
                 {
                     new Document { FileName = "documento.pdf", Content = new byte[] { 0x01 }, ContentType = "application/pdf" }
                 }
-                    };
+            };
 
             _context.Absences.Add(absence);
             await _context.SaveChangesAsync();

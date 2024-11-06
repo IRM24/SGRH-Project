@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace SGRHTestProject
+namespace SGRHTestProject.Tests.UnitTests
 {
     [TestFixture]
     public class LayoffsServiceTests

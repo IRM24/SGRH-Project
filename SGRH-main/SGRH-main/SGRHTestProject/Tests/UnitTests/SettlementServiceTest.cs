@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SGRH.Web.Tests.Services
+namespace SGRHTestProject.Tests.UnitTests
 {
     [TestFixture]
     public class SettlementServiceTests

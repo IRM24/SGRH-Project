@@ -15,7 +15,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using SGRH.Web.Enums;
 
-namespace SGRHTestProject
+namespace SGRHTestProject.Tests.UnitTests
 {
     [TestFixture]
     public class OvertimeServiceTests
@@ -269,9 +269,9 @@ namespace SGRHTestProject
             var user1 = new User { Id = "usuario1", Dni = "111111111", Name = "Ian", LastName = "Calvo", DepartmentId = 1 };
 
             // Crea algunos registros de horas extra
-            var approvedOvertime1 = new Overtime { Id_OT = 1, PersonalAction = new PersonalAction { User = user1, Status = SGRH.Web.Enums.Status.Aprobado } };
-            var approvedOvertime2 = new Overtime { Id_OT = 2, PersonalAction = new PersonalAction { User = user1, Status = SGRH.Web.Enums.Status.Aprobado } };
-            var deniedOvertime = new Overtime { Id_OT = 3, PersonalAction = new PersonalAction { User = user1, Status = SGRH.Web.Enums.Status.Rechazado } };
+            var approvedOvertime1 = new Overtime { Id_OT = 1, PersonalAction = new PersonalAction { User = user1, Status = Status.Aprobado } };
+            var approvedOvertime2 = new Overtime { Id_OT = 2, PersonalAction = new PersonalAction { User = user1, Status = Status.Aprobado } };
+            var deniedOvertime = new Overtime { Id_OT = 3, PersonalAction = new PersonalAction { User = user1, Status = Status.Rechazado } };
 
             _context.Overtimes.AddRange(approvedOvertime1, approvedOvertime2, deniedOvertime);
             await _context.SaveChangesAsync();

@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SGRHTestProject
+namespace SGRHTestProject.Tests.UnitTests
 {
     [TestFixture]
     public class PayrollPeriodServiceTests

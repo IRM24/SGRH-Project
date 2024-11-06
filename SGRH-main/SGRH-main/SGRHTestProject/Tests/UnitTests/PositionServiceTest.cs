@@ -5,7 +5,7 @@ using SGRH.Web.Models.Entities;
 using SGRH.Web.Services;
 using System.Threading.Tasks;
 
-namespace SGRHTestProject
+namespace SGRHTestProject.Tests.UnitTests
 {
     [TestFixture] // Atributo que marca esta clase como un conjunto de pruebas
     internal class PositionServiceTest

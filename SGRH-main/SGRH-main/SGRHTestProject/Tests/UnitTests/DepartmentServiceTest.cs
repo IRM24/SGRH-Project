@@ -6,7 +6,7 @@ using SGRH.Web.Models.Entities;
 using SGRH.Web.Services;
 using System.Threading.Tasks;
 
-namespace SGRHTestProject
+namespace SGRHTestProject.Tests.UnitTests
 {
     [TestFixture]
     public class DepartmentServiceTests
