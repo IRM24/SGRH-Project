@@ -20,7 +20,9 @@ namespace SGRHTestProject.Pages
 
         private By generateTemporaryPassLocator = By.ClassName("btn-secondary");
 
-        private By messageTemporaryPassword = By.ClassName("alert-success");
+        private By messageTemporarySuccesPassword = By.ClassName("alert-success");
+
+        private By messageTemporaryErrorPassword = By.ClassName("alert-danger");
 
 
         public LogInPage(IWebDriver driver) : base(driver)
@@ -81,9 +83,16 @@ namespace SGRHTestProject.Pages
         }
 
 
-        public string GetConfirmationMessage()
+        public string GetSucessTemporaryPasswordMessage()
         {
-            var message = FindElement(messageTemporaryPassword);
+            var message = FindElement(messageTemporarySuccesPassword);
+            return message.Text;
+        }
+
+
+        public string GetErrorTemporaryPasswordMessage()
+        {
+            var message = FindElement(messageTemporaryErrorPassword);
             return message.Text;
         }
 

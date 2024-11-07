@@ -1,4 +1,5 @@
 ﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Remote;
@@ -31,7 +32,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
         public void TearDown()
         {
             //driver.Quit();
-            //driver.Dispose();
+            driver.Dispose();
         }
 
 
@@ -54,7 +55,6 @@ namespace SGRHTestProject.Tests.AutomatedTests
 
 
         // Caso de prueba: Autenticación-02 - Credenciales inválidas
-        /*
         [Test]
         public void LoginInWithInvalidCredentials()
         {
@@ -68,7 +68,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
             string errorMessage = logInPage.GetErrorMessage();
             Assert.AreEqual("Usuario o contraseña incorrecta", errorMessage, "Expected error message not displayed.");
         }
-        */
+        
 
         // Caso de prueba: Autenticación-03 - Recuperación de contraseña con un correo electrónico válido
         [Test]
@@ -81,8 +81,35 @@ namespace SGRHTestProject.Tests.AutomatedTests
             logInPage.GenerateTemporaryPassword(email);
 
             // Verificar que se muestre un mensaje de confirmación
-            string confirmationMessage = logInPage.GetConfirmationMessage();
+            string confirmationMessage = logInPage.GetSucessTemporaryPasswordMessage();
             Assert.AreEqual("Se ha enviado una nueva contraseña temporal por correo electrónico, favor validar.", confirmationMessage);
+        }
+
+
+        // Caso de prueba: Autenticación-04 - Recuperación de contraseña con un correo electrónico no registrado
+        [Test]
+        public void PasswordRecoveryWithInvalidEmail()
+        {
+            string email = "email_invalido@example.com";
+
+            // Realizar las acciones de recuperación de contraseña
+            logInPage.ClickForgotPasswordLink();
+            logInPage.GenerateTemporaryPassword(email);
+
+            // Verificar que se muestre un mensaje de confirmación
+            string confirmationMessage = logInPage.GetErrorTemporaryPasswordMessage();
+            Assert.AreEqual("No se encontró un usuario con el correo electrónico proporcionado.", confirmationMessage);
+        }
+
+
+        // Caso de prueba: Autenticación-05 - Recuperación de contraseña con campo de correo electrónico vacío
+        [Test]
+        public void PasswordRecoveryWithEmptyEmailField()
+        {
+            logInPage.ClickForgotPasswordLink();
+            logInPage.GenerateTemporaryPassword(""); 
+            string errorMessage = logInPage.GetErrorTemporaryPasswordMessage();
+            Assert.AreEqual("Por favor, ingrese un correo electrónico.", errorMessage);  // Ajusta el mensaje según la aplicación
         }
 
     }
