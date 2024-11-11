@@ -43,9 +43,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
             string email = "cpicado869@gmail.com";
             string password = "Hola321!";
   
-            logInPage.EnterEmail(email);
-            logInPage.EnterPassword(password);
-            logInPage.ClickLogin();
+            logInPage.LogIn(email, password);
             Thread.Sleep(3000);
 
             string homePageMessage = logInPage.GetHomePageMessage();
@@ -61,9 +59,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
             string email = "email_invalido@example.com";
             string password = "Contrasena123!";
 
-            logInPage.EnterEmail(email);
-            logInPage.EnterPassword(password);
-            logInPage.ClickLogin();
+            logInPage.LogIn(email, password);
 
             string errorMessage = logInPage.GetErrorMessage();
             Assert.AreEqual("Usuario o contraseña incorrecta", errorMessage, "Expected error message not displayed.");
@@ -112,5 +108,88 @@ namespace SGRHTestProject.Tests.AutomatedTests
             Assert.AreEqual("Por favor, ingrese un correo electrónico.", errorMessage);  // Ajusta el mensaje según la aplicación
         }
 
+
+        // Caso de prueba: Autenticación-06 - Validar acceso al módulo de usuarios con cuenta de administrador
+        [Test]
+        public void AccessToResourcesWithAdminUser
+()
+        {
+            string email = "cpicado869@gmail.com";
+            string password = "Hola321!";
+
+            logInPage.LogIn(email, password);
+            Thread.Sleep(3000);
+
+            logInPage.ClickUserModule();
+            Thread.Sleep(3000);
+
+            string headerMessage = logInPage.GetUserModuleHeaderMessage();
+            Assert.AreEqual("Gestión de Usuarios", headerMessage);
+        }
+
+
+
+        // Caso de prueba: Autenticación-07 - Denegar acceso a recursos no autorizados para empleados
+        [Test]
+        public void AccessToResourcesDeniedForEmployeeRole()
+        {
+            string email = "hpicado@test.com";
+            string password = "Hola321!";
+
+            logInPage.LogIn(email, password);
+            Thread.Sleep(3000);
+
+            bool isUserModuleVisible = logInPage.IsUserModuleVisible();
+            Assert.IsFalse(isUserModuleVisible, "El usuario de rol empleado no debería tener acceso al módulo de usuarios.");
+
+        }
+
+
+
+        // Caso de prueba: Autenticación-08 - Bloqueo de cuenta después de tres intentos fallidos
+        [Test]
+        public void AccountLockoutAfterFailedAttempts()
+        {
+            string email = "fabiana0744@hotmail.com";
+            string password = "Hola3321!";
+
+            logInPage.EnterEmail(email);
+            for (int i = 0; i < 3; i++)
+            {
+                logInPage.EnterPassword(password);
+                logInPage.ClickLogin();
+                Thread.Sleep(2000);
+            }
+            Thread.Sleep(2000);
+            // Verificar si aparece el mensaje de bloqueo temporal
+            string lockoutMessage = logInPage.GetAccountLockoutMessage();
+            Assert.AreEqual("La cuenta está bloqueada debido a demasiados intentos fallidos de inicio de sesión. Por favor, intente en otro momento.", lockoutMessage, "La cuenta debería estar bloqueada después de tres intentos fallidos.");
+        }
+
+
+        
+
+        // Caso de prueba: Autenticación-10 - El usuario puede cerrar sesión de manera manual
+        [Test]
+        public void UserLogOutManually()
+        {
+            string email = "cpicado869@gmail.com";
+            string password = "Hola321!";
+
+            logInPage.LogIn(email, password);
+            Thread.Sleep(3000);
+
+            string homePageMessage = logInPage.GetHomePageMessage();
+            Assert.AreEqual("Dashboard Personal", homePageMessage);
+
+            // Hacer clic en el botón de cerrar sesión
+            logInPage.ClickLogout();
+            Thread.Sleep(3000);
+
+            // Verificar que la página haya redirigido a la página de inicio de sesión
+            string loginPageTitle = logInPage.GetLoginPageTitle();
+            Assert.AreEqual("Ingrese sus credenciales para iniciar sesión", loginPageTitle);
+        }
+        
     }
 }

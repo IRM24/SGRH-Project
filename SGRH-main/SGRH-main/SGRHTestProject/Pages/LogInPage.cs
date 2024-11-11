@@ -24,6 +24,15 @@ namespace SGRHTestProject.Pages
 
         private By messageTemporaryErrorPassword = By.ClassName("alert-danger");
 
+        private By userModuleLocator = By.CssSelector("i.nav-icon.fas.fa-user");
+
+        private By userModuleHeaderMessageLocator = By.CssSelector("h1.m-0");
+
+        private By lockoutMessageLocator = By.XPath("//li[contains(text(), 'La cuenta está bloqueada debido a demasiados intentos fallidos de inicio de sesión')]");
+
+        private By logoutBtnLocator = By.XPath("//a[@href='javascript:void(0);' and @class='nav-link']");
+
+        private By loginPageTitleLocator = By.ClassName("login-box-msg");
 
         public LogInPage(IWebDriver driver) : base(driver)
         {
@@ -44,6 +53,20 @@ namespace SGRHTestProject.Pages
         {
             Click(loginBtnLocator);
         }
+
+        public void ClickLogout()
+        {
+            Click(logoutBtnLocator);
+        }
+
+
+        public void LogIn(string username, string password)
+        {
+            EnterEmail(username);
+            EnterPassword(password);
+            ClickLogin();
+        }
+
 
         public String GetHomePageMessage()
         {
@@ -96,6 +119,43 @@ namespace SGRHTestProject.Pages
             return message.Text;
         }
 
+
+        public void ClickUserModule()
+        {
+            Click(userModuleLocator);
+        }
+
+        public string GetUserModuleHeaderMessage()
+        {
+            return FindElement(userModuleHeaderMessageLocator).Text;
+        }
+
+
+        public string GetAccountLockoutMessage()
+        {
+            return FindElement(lockoutMessageLocator).Text;
+        }
+
+
+        public bool IsUserModuleVisible()
+        {
+            try
+            {
+                var userModuleIcon = FindElement(userModuleLocator);
+                return userModuleIcon.Displayed; // devuelve true
+            }
+            catch (NoSuchElementException)
+            {
+                // Si no se encuentra el elemento, significa que no está visible
+                return false;
+            }
+        }
+
+
+        public string GetLoginPageTitle()
+        {
+            return FindElement(loginPageTitleLocator).Text;
+        }
 
     }
 }
