@@ -18,6 +18,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
     {
         private IWebDriver driver;
         private LogInPage logInPage;
+        UserModulePage userModulePage;
 
         [SetUp]
         public void SetUp()
@@ -25,6 +26,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
             logInPage = new LogInPage(driver);
             driver = logInPage.ChromeDriverConnection();
             logInPage.Visit("https://localhost:7122/Account/Login?ReturnUrl=%2F");
+            userModulePage = new UserModulePage(driver);
             driver.Manage().Window.Maximize(); 
         }
 
@@ -120,10 +122,10 @@ namespace SGRHTestProject.Tests.AutomatedTests
             logInPage.LogIn(email, password);
             Thread.Sleep(3000);
 
-            logInPage.ClickUserModule();
+            userModulePage.GoToUserModule();
             Thread.Sleep(3000);
 
-            string headerMessage = logInPage.GetUserModuleHeaderMessage();
+            string headerMessage = userModulePage.GetUserModuleHeaderMessage();
             Assert.AreEqual("Gestión de Usuarios", headerMessage);
         }
 
@@ -139,7 +141,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
             logInPage.LogIn(email, password);
             Thread.Sleep(3000);
 
-            bool isUserModuleVisible = logInPage.IsUserModuleVisible();
+            bool isUserModuleVisible = userModulePage.IsUserModuleVisible();
             Assert.IsFalse(isUserModuleVisible, "El usuario de rol empleado no debería tener acceso al módulo de usuarios.");
 
         }

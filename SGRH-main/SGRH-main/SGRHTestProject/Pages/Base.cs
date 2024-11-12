@@ -93,5 +93,22 @@ namespace SGRHTestProject.Pages
         {
             driver.Navigate().GoToUrl(url);
         }
+
+
+
+        public void SelectDropdownOption(By dropdownLocator, string optionText)
+        {
+            IWebElement dropdownElement = FindElement(dropdownLocator);
+            SelectElement select = new SelectElement(dropdownElement);
+            select.SelectByText(optionText);
+        }
+
+        public void ClearField(By fieldLocator)
+        {
+            var field = FindElement(fieldLocator);
+            field.Clear();
+        }
+
+
     }
 }
