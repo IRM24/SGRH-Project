@@ -26,7 +26,7 @@ namespace SGRHTestProject.Pages
         {
             //driver = new OpenQA.Selenium.Chrome.ChromeDriver();
             //string driverPath = @"./resources/chromedriver/chromedriver.exe"; // Ruta donde colocaste el chromedriver
-            driver = new ChromeDriver("C:\\Users\\camiu\\source\\repos\\SGRH-Project\\SGRH-main\\SGRH-main\\SGRHTestProject\\resources\\chromedriver\\chromedriver.exe");
+            driver = new ChromeDriver("C:\\Users\\fabia\\source\\repos\\SGRH-Project\\SGRH-main\\SGRH-main\\SGRHTestProject\\resources\\chromedriver\\chromedriver.exe");
             return driver;
         }
 
