@@ -26,7 +26,7 @@ namespace SGRHTestProject.Pages
         {
             //driver = new OpenQA.Selenium.Chrome.ChromeDriver();
             //string driverPath = @"./resources/chromedriver/chromedriver.exe"; // Ruta donde colocaste el chromedriver
-            driver = new ChromeDriver("C:\\Users\\fabia\\source\\repos\\SGRH-Project\\SGRH-main\\SGRH-main\\SGRHTestProject\\resources\\chromedriver\\chromedriver.exe");
+            driver = new ChromeDriver("C:\\Users\\camiu\\source\\repos\\SGRH-Project\\SGRH-main\\SGRH-main\\SGRHTestProject\\resources\\chromedriver\\chromedriver.exe");
             return driver;
         }
 
@@ -108,6 +108,17 @@ namespace SGRHTestProject.Pages
             var field = FindElement(fieldLocator);
             field.Clear();
         }
+        public IWebElement WaitUntilElementIsVisible(By locator, int timeoutInSeconds = 10)
+        {
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutInSeconds));
+            return wait.Until(driver =>
+            {
+                var element = driver.FindElement(locator);
+                return element.Displayed ? element : null;
+            });
+        }
+
+
 
 
     }
