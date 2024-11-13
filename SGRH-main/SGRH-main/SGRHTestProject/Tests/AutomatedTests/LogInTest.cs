@@ -72,13 +72,12 @@ namespace SGRHTestProject.Tests.AutomatedTests
         [Test]
         public void PasswordRecoveryWithValidEmail()
         {
-            string email = "email@example.com";
+            string email = "xinia.solano@test.com";
 
-            // Realizar las acciones de recuperación de contraseña
             logInPage.ClickForgotPasswordLink();
             logInPage.GenerateTemporaryPassword(email);
+            Thread.Sleep(500);
 
-            // Verificar que se muestre un mensaje de confirmación
             string confirmationMessage = logInPage.GetSucessTemporaryPasswordMessage();
             Assert.AreEqual("Se ha enviado una nueva contraseña temporal por correo electrónico, favor validar.", confirmationMessage);
         }
@@ -90,11 +89,9 @@ namespace SGRHTestProject.Tests.AutomatedTests
         {
             string email = "email_invalido@example.com";
 
-            // Realizar las acciones de recuperación de contraseña
             logInPage.ClickForgotPasswordLink();
             logInPage.GenerateTemporaryPassword(email);
 
-            // Verificar que se muestre un mensaje de confirmación
             string confirmationMessage = logInPage.GetErrorTemporaryPasswordMessage();
             Assert.AreEqual("No se encontró un usuario con el correo electrónico proporcionado.", confirmationMessage);
         }
@@ -163,7 +160,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
                 Thread.Sleep(2000);
             }
             Thread.Sleep(2000);
-            // Verificar si aparece el mensaje de bloqueo temporal
+
             string lockoutMessage = logInPage.GetAccountLockoutMessage();
             Assert.AreEqual("La cuenta está bloqueada debido a demasiados intentos fallidos de inicio de sesión. Por favor, intente en otro momento.", lockoutMessage, "La cuenta debería estar bloqueada después de tres intentos fallidos.");
         }
@@ -184,11 +181,9 @@ namespace SGRHTestProject.Tests.AutomatedTests
             string homePageMessage = logInPage.GetHomePageMessage();
             Assert.AreEqual("Dashboard Personal", homePageMessage);
 
-            // Hacer clic en el botón de cerrar sesión
             logInPage.ClickLogout();
             Thread.Sleep(3000);
 
-            // Verificar que la página haya redirigido a la página de inicio de sesión
             string loginPageTitle = logInPage.GetLoginPageTitle();
             Assert.AreEqual("Ingrese sus credenciales para iniciar sesión", loginPageTitle);
         }

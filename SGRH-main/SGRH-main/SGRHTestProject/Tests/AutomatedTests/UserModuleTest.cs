@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
+﻿using Microsoft.VisualStudio.TestPlatform.Utilities.Helpers;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -126,7 +127,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
 
             userModulePage.ShowInformationOfUser();
 
-            userModulePage.ClickEdiDataUserButton();
+            userModulePage.ClickEditDataUserButton();
 
             userModulePage.EnterLastName(newLastName);
             userModulePage.EnterEmail(newEmail);
@@ -192,6 +193,52 @@ namespace SGRHTestProject.Tests.AutomatedTests
 
             string successMessage = userModulePage.GetUserDeletedSucessMessage();
             Assert.AreEqual("Usuario eliminado de manera exitosa.", successMessage);
+        }
+
+
+
+        // Caso de prueba: Usuarios-09 - Descargar los usuarios en formato PDF
+        [Test]
+        public void DownloadUsersAsPDF()
+        {
+            userModulePage.ClickDownloadPdfButton();
+
+            string downloadedFilePath = UserModulePage.WaitForDownloadedFile("SGRH  Sistema de Gestión de Recursos Humanos.pdf", 10); 
+
+            Assert.IsNotNull(downloadedFilePath, "El archivo PDF no se ha descargado correctamente.");
+        }
+
+
+        // Caso de prueba: Usuarios-10 - Descargar los usuarios en formato Excel
+        [Test]
+        public void DownloadUsersAsExcel()
+        {
+            userModulePage.ClickDownloadExcelButton();
+
+            string downloadedFilePath = UserModulePage.WaitForDownloadedFile("SGRH  Sistema de Gestión de Recursos Humanos.xlsx", 10);
+
+            Assert.IsNotNull(downloadedFilePath, "El archivo Excel no se ha descargado correctamente.");
+        }
+
+
+        // Caso de prueba: Usuarios-11 - Visualizar los detalles de un usuario registrado
+        [Test]
+        public void ViewUserDetails()
+        {
+            string userName = "Fabiana";
+            userModulePage.Search(userName);
+            userModulePage.ShowInformationOfUser();
+
+            userModulePage.ClickViewDetailsButton();
+            Thread.Sleep(500);
+
+            var userDetails = userModulePage.GetUserDetails();
+            Assert.AreEqual("Fabiana", userDetails["Nombre"], "El nombre del usuario no coincide.");
+            Assert.AreEqual("fabiana0744@hotmail.com", userDetails["Email"], "El correo electrónico no coincide.");
+            Assert.AreEqual("8920-5377", userDetails["NumeroTelefono"], "El número de contacto no coincide.");
+            Assert.AreEqual("Gerencia de TI", userDetails["Puesto"], "El puesto no coincide.");
+            Assert.AreEqual("Soporte", userDetails["Departamento"], "El departamento no coincide.");
+
         }
 
 

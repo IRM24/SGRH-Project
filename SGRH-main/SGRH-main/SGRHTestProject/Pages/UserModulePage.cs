@@ -36,21 +36,19 @@ namespace SGRHTestProject.Pages
 
         private By createUserBtnLocator = By.CssSelector("input[type='submit'][value='Crear']");
 
+        private By confirmUserCreationBtn = By.CssSelector("button.swal2-confirm.swal2-styled");
 
+
+        //Localizadores de mensajes de error
         private By birthDateErrorMessageLocator = By.XPath("//div[@class='swal2-html-container' and text()='La fecha de nacimiento debe estar entre 01/01/1900 y hace 18 años.']");
         private By deparmentFieldRequiredErrorMessage = By.CssSelector("span[data-valmsg-for='DepartmentId'][class='text-danger field-validation-error']");
         private By positionFieldRequiredErrorMessage = By.CssSelector("span[data-valmsg-for='PositionId'][class='text-danger field-validation-error']");
         private By salaryErrorMessageLocator = By.CssSelector("div.swal2-html-container#swal2-html-container");
 
-
-        private By confirmUserCreationBtn = By.CssSelector("button.swal2-confirm.swal2-styled");
-
         //Localizadores para busqueda
         private By searchBarLocator = By.CssSelector("input[type='search'].form-control.form-control-sm");
         private By searchResultsLocator = By.CssSelector("table tbody tr");
         private By eachSearchResultLocator = By.CssSelector("td");
-
-
 
         //Localizadores para editar 
         private By showInformationOfUser = By.XPath("//td[@class='dtr-control sorting_1']");
@@ -59,11 +57,22 @@ namespace SGRHTestProject.Pages
         private By confirmEditButtonLocator = By.CssSelector("button.swal2-confirm.swal2-styled");
         private By userEditedSuccessMessageLocator = By.CssSelector("div.swal2-html-container#swal2-html-container");
 
-
         //Localizadores para eliminar
         private By deleteUserBtnLocator = By.XPath("//span[@class='dtr-data']//button[@type='button' and contains(@class, 'btn-danger') and @data-user-name='Carlos Perez']");
         private By confirmDeleteButtonLocator = By.XPath("//button[@type='button' and contains(@class, 'swal2-confirm') and contains(@class, 'swal2-styled') and text()='OK']");
         private By userDeletedSuccessMessageLocator = By.XPath("//div[@class='swal2-html-container' and text()='Usuario eliminado de manera exitosa.']");
+
+        //Localizadores de descarga
+        private By downloadPdfBtnLocator = By.XPath("//span[text()='PDF']");
+        private By downloadExcelBtnLocator = By.XPath("//span[text()='Excel']");
+
+        //Localizadores para ver Detalles
+        private By viewDetailsUserBtnLocator = By.CssSelector("span.dtr-data > button.btn.btn-secondary");
+        By nameUserDetailField = By.CssSelector("input.form-control[readonly][value='Fabiana']");
+        By emailUserDetailField = By.CssSelector("input.form-control[readonly][value='fabiana0744@hotmail.com']");
+        By phoneUserDetailField = By.CssSelector("input.form-control[readonly][value='8920-5377']");
+        By positionUserDetailField = By.CssSelector("input.form-control[readonly][value='Gerencia de TI']");
+        By departmentUserDeatilField = By.CssSelector("input.form-control[readonly][value='Soporte']");
 
 
         public UserModulePage(IWebDriver driver) : base(driver)
@@ -249,8 +258,8 @@ namespace SGRHTestProject.Pages
             Click(showInformationOfUser);
         }
 
-
-        public void ClickEdiDataUserButton()
+        // --------------------- MÉTODOS PARA EDITAR ---------------------
+        public void ClickEditDataUserButton()
         {
             Click(editDataUserBtnLocator);
         }
@@ -272,6 +281,7 @@ namespace SGRHTestProject.Pages
             return FindElement(userEditedSuccessMessageLocator).Text;
         }
 
+        // --------------------- MÉTODOS PARA ElIMINAR ---------------------
 
         public void ClickDeleteUserButton()
         {
@@ -286,6 +296,54 @@ namespace SGRHTestProject.Pages
         public string GetUserDeletedSucessMessage()
         {
             return FindElement(userDeletedSuccessMessageLocator).Text;
+        }
+
+
+        // --------------------- MÉTODOS PARA DESCARGAS ---------------------
+
+
+        public void ClickDownloadPdfButton()
+        {
+            Click(downloadPdfBtnLocator);
+        }
+
+        public void ClickDownloadExcelButton()
+        {
+            Click(downloadExcelBtnLocator);
+        }
+
+        public static string WaitForDownloadedFile(string fileName, int timeoutInSeconds)
+        {
+            string downloadPath = "C:\\Users\\fabia\\Downloads"; // Cambia a la ruta de descarga
+            string filePath = Path.Combine(downloadPath, fileName);
+
+            int waitedTime = 0;
+            while (!File.Exists(filePath) && waitedTime < timeoutInSeconds * 1000)
+            {
+                Thread.Sleep(500);
+                waitedTime += 500;
+            }
+
+            return File.Exists(filePath) ? filePath : null;
+        }
+
+        // --------------------- MÉTODOS PARA VER DETALLES ---------------------
+        public void ClickViewDetailsButton()
+        {
+            Click(viewDetailsUserBtnLocator);
+        }
+
+        public Dictionary<string, string> GetUserDetails()
+        {
+            var userDetails = new Dictionary<string, string>();
+
+            userDetails["Nombre"] = FindElement(nameUserDetailField).GetAttribute("value");
+            userDetails["Email"] = FindElement(emailUserDetailField).GetAttribute("value");
+            userDetails["NumeroTelefono"] = FindElement(phoneUserDetailField).GetAttribute("value");
+            userDetails["Puesto"] = FindElement(positionUserDetailField).GetAttribute("value");
+            userDetails["Departamento"] = FindElement(departmentUserDeatilField).GetAttribute("value");
+
+            return userDetails;
         }
 
 
