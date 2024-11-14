@@ -187,7 +187,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
             Thread.Sleep(2000);
 
             // Buscar el registro de despido del empleado (por ejemplo, empleado "Michael")
-            layoffsModulePage.EnterSearchLayoff("Jean");
+            layoffsModulePage.EnterSearchLayoff("Michael");
             Thread.Sleep(4000); // Espera a que cargue el empleado en la lista
 
             layoffsModulePage.ClickOptionsLayoff();
