@@ -17,7 +17,9 @@ namespace SGRHTestProject.Pages
 
         private By errorMessageBalanceLocator => By.XPath("/html/body/div[2]/div");
         private By descriptionErrorLocator = By.XPath("/html/body/div[1]/div[2]/section/div/div[1]/div/div/div/form/div[1]/div[3]/span");
-        private By errorMessageInvalidDate = By.XPath("/html/body/div[4]/div");
+        //private By errorMessageInvalidDate = By.XPath("/html/body/div[4]/div");
+        private By errorMessageInvalidDate = By.XPath("//div[@id='swal2-html-container']");
+
 
         private By descripcionLocator = By.XPath("//*[@id=\"Description\"]");
         private By commentsLocator = By.XPath("//*[@id=\"Comments\"]");
@@ -32,22 +34,27 @@ namespace SGRHTestProject.Pages
 
         public VacationModulePage(IWebDriver driver) : base(driver) { }
 
-        public void GoToGestionAcciones()
+
+        // --------------------- MÉTODOS PARA MODULO ---------------------
+
+        public void GoToActionsManagement()
         {
             Click(gestionAccionesLocator);
         }
 
-        public void GoToVacacionesSection()
+        public void GoToVacationSection()
         {
             Click(vacacionesSectionLocator);
         }
 
-        public void GoToMisSolicitudes()
+        public void GoToMyRequests()
         {
             Click(misSolicitudesLocator);
         }
 
-        public void ClickSolicitarVacaciones()
+
+        // --------------------- MÉTODOS PARA SOLICITAR VACACIONES ---------------------
+        public void ClickRequestVacation()
         {
             Click(solicitarVacacionesBtnLocator);
         }
@@ -99,9 +106,10 @@ namespace SGRHTestProject.Pages
             return errorElement.Text;
         }
 
+        // --------------------- MÉTODOS PARA DESCARGAS ---------------------
+
         public void DownloadVacationRequestsPDF()
         {
-            // Ubica y selecciona el botón de descarga de PDF
             Click(pdfDownloadButtonLocator);
         }
 
@@ -110,16 +118,16 @@ namespace SGRHTestProject.Pages
             Click(excelDownloadButtonLocator);
         }
 
+
+        // --------------------- MÉTODOS PARA BÚSQUEDAS ---------------------
         public void EnterSearchTerm(string searchTerm)
         {
-            // Encuentra el campo de búsqueda, borra el contenido y escribe el término de búsqueda
             ClearField(searchBoxLocator);
             Type(searchTerm, searchBoxLocator);
         }
 
         public List<IWebElement> GetSearchResults()
         {
-            // Devuelve una lista de elementos que coinciden con los resultados de búsqueda
             return FindElements(resultItemLocator).ToList();
         }
 

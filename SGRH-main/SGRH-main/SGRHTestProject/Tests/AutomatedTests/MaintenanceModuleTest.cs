@@ -16,19 +16,6 @@ namespace SGRHTestProject.Tests.AutomatedTests
         [SetUp]
         public void SetUp()
         {
-            /*
-            driver = new ChromeDriver();
-            logInPage = new LogInPage(driver);
-            maintenanceModulePage = new MaintenanceModulePage(driver);
-            driver.Manage().Window.Maximize();
-
-            // Iniciar sesión con un usuario autorizado
-            logInPage.Visit("https://localhost:7122/Account/Login?ReturnUrl=%2F");
-            logInPage.LogIn("cpicado869@gmail.com", "Hola321!");
-            Thread.Sleep(3000); // Espera para que la página cargue completamente
-            */
-
-
             maintenanceModulePage = new MaintenanceModulePage(driver);
             driver = maintenanceModulePage.ChromeDriverConnection();
             maintenanceModulePage.Visit("https://localhost:7122/Account/Login?ReturnUrl=%2F");
