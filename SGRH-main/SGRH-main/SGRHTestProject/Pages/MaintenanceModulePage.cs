@@ -4,32 +4,41 @@ namespace SGRHTestProject.Pages
 {
     public class MaintenanceModulePage : Base
     {
+        //Localizadores principales
         private By maintenanceModuleLocator => By.LinkText("Mantenimiento");
         private By departmentsSectionLocator => By.LinkText("Departamentos");
+        private By positionsSectionLocator => By.LinkText("Puestos");
+
+        // Localizadores para crear departamento
         private By createDepartmentButtonLocator => By.XPath("/html/body/div[1]/div[2]/section/div/div/div[2]/p/a");
-        private By departmentNameInputLocator => By.Id("Department_Name"); // Reemplaza "DepartmentName" con el ID real del campo de entrada
-        private By createButtonLocator => By.XPath("/html/body/div[1]/div[2]/section/div/div/form/div/div[3]/div/input"); // Reemplaza el texto si es diferente
-        private By successMessageLocator => By.CssSelector(".swal2-title"); // Selector del título de SweetAlert
+        private By departmentNameInputLocator => By.Id("Department_Name");
+        private By createButtonLocator => By.XPath("/html/body/div[1]/div[2]/section/div/div/form/div/div[3]/div/input");
+        private By successMessageLocator => By.CssSelector(".swal2-title");
 
-        private By editDepartmentButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr/td[2]/a"); // Actualiza si es necesario
-        private By departmentNameEditInputLocator => By.Id("Department_Name"); // Reemplaza con el ID real del campo de entrada
-        private By updateButtonLocator => By.XPath("/html/body/div[1]/div[2]/section/div/div/form/div/div[3]/div/input"); // Reemplaza si el texto es diferente
-        private By searchBoxLocator => By.XPath("//*[@id=\"example1_filter\"]/label/input"); // Actualiza si el selector es diferente
+        // Localizadores para editar departamento
+        private By editDepartmentButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr/td[2]/a");
+        private By departmentNameEditInputLocator => By.Id("Department_Name");
+        private By updateButtonLocator => By.XPath("/html/body/div[1]/div[2]/section/div/div/form/div/div[3]/div/input");
+        private By searchBoxLocator => By.XPath("//*[@id=\"example1_filter\"]/label/input");
 
-        private By departmentSearchResultLocator => By.XPath("//td[contains(text(), 'Administrativos')]"); // Localiza el departamento buscado en los resultados
+        private By departmentSearchResultLocator => By.XPath("//td[contains(text(), 'Administrativos')]");
 
-        private By deleteButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr[1]/td[3]/button"); // Localiza el botón de eliminar en la fila del departamento
-        private By confirmDeleteButtonLocator => By.XPath("//button[contains(text(), 'OK')]"); // Botón en el modal de confirmación de eliminación
+        // Localizadores para eliminar departamento
+        private By deleteButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr[1]/td[3]/button");
+        private By confirmDeleteButtonLocator => By.XPath("//button[contains(text(), 'OK')]");
 
-        private By positionsSectionLocator => By.LinkText("Puestos"); // Enlace para la sección de "Puestos"
+        
         private By searchBoxPositionsLocator => By.XPath("//*[@id=\"example1_filter\"]/label/input");
-        private By positionSearchResultLocator => By.XPath("//td[contains(text(), 'Auditor')]"); // Verificación del resultado en tiempo real para el puesto buscado
+        private By positionSearchResultLocator => By.XPath("//td[contains(text(), 'Auditor')]");
 
-        private By deletePositionButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr[1]/td[4]/button"); // Botón de eliminar para el puesto "Auditor"
-        private By confirmPositionDeleteButtonLocator => By.XPath("//button[contains(text(), 'OK')]"); // Confirmación del swal
+        // Localizadores para ekiminar puesto
+        private By deletePositionButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr[1]/td[4]/button");
+        private By confirmPositionDeleteButtonLocator => By.XPath("//button[contains(text(), 'OK')]");
 
         public MaintenanceModulePage(IWebDriver driver) : base(driver) { }
 
+
+        // --------------------- MÉTODOS PARA MODULO ---------------------
         public void GoToMaintenanceModule()
         {
             Click(maintenanceModuleLocator);
@@ -40,6 +49,12 @@ namespace SGRHTestProject.Pages
             Click(departmentsSectionLocator);
         }
 
+        public void GoToPositionsSection()
+        {
+            Click(positionsSectionLocator);
+        }
+
+        // --------------------- MÉTODOS PARA CREAR DEPARTAMENTO ---------------------
         public void ClickCreateDepartment()
         {
             Click(createDepartmentButtonLocator);
@@ -55,6 +70,7 @@ namespace SGRHTestProject.Pages
             Click(createButtonLocator);
         }
 
+        // --------------------- MÉTODOS PARA EDITAR DEPARTAMENTO ---------------------
         public void ClickEditDepartment()
         {
             Click(editDepartmentButtonLocator);
@@ -71,6 +87,7 @@ namespace SGRHTestProject.Pages
             Click(updateButtonLocator);
         }
 
+        // --------------------- MÉTODOS PARA BUSCAR DEPARTAMENTO ---------------------
         public void SearchDepartment(string departmentName)
         {
             Type(departmentName, searchBoxLocator);
@@ -81,6 +98,8 @@ namespace SGRHTestProject.Pages
             return IsDisplayed(departmentSearchResultLocator);
         }
 
+
+        // --------------------- MÉTODOS PARA ELIMINAR DEPARTAMENTO ---------------------
         public void ClickDeleteDepartment()
         {
             Click(deleteButtonLocator);
@@ -104,11 +123,8 @@ namespace SGRHTestProject.Pages
             }
         }
 
-        public void GoToPositionsSection()
-        {
-            Click(positionsSectionLocator);
-        }
 
+        // --------------------- MÉTODOS PARA BUSCAR PUESTO ---------------------
         public void SearchPosition(string positionName)
         {
             Type(positionName, searchBoxPositionsLocator);
@@ -119,6 +135,7 @@ namespace SGRHTestProject.Pages
             return IsDisplayed(positionSearchResultLocator);
         }
 
+        // --------------------- MÉTODOS PARA ELIMINAR PUESTO ---------------------
         public void DeletePosition()
         {
             Click(deletePositionButtonLocator);
