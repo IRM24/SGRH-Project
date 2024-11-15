@@ -5,32 +5,42 @@ namespace SGRHTestProject.Pages
 {
     public class LayoffsModulePage : Base
     {
+        //Localizadores principales
         private By actionsManagementLocator => By.LinkText("Gestión de Acciones");
         private By layoffsSectionLocator => By.XPath("/html/body/div[1]/aside[1]/div/div[4]/div/div/nav/ul/li[4]/ul/li[3]/a");
-       
         private By registerLayoffButtonLocator = By.XPath("//a[@href='/Layoffs/CreateLayoff' and contains(@class, 'nav-link')]//p[text()='Registrar despido']");
-
         private By listLayoffButtonLocator = By.XPath("/html/body/div[1]/aside[1]/div/div[4]/div/div/nav/ul/li[4]/ul/li[3]/ul/li[1]");
 
-        private By searchEmployeeLocator => By.XPath("//*[@id=\"dni\"]"); // Replace "searchEmployee" with the actual ID
+        // Localizadores para el formulario de crear despido
+        private By searchEmployeeLocator => By.XPath("//*[@id=\"dni\"]");
         private By searchButtonLocator => By.Id("search-btn");
-        private By layoffDateLocator => By.XPath("//*[@id=\"DismissalDate\"]"); // Replace "layoffDate" with the actual ID
-        private By layoffReasonLocator => By.XPath("//*[@id=\"DismissalCause\"]"); // Replace "layoffReason" with the actual ID
-        private By employerResponsibilityCheckboxLocator => By.XPath("//*[@id=\"HasEmployerResponsibility\"]"); // Replace "employerResponsibility" with the actual ID
+        private By layoffDateLocator => By.XPath("//*[@id=\"DismissalDate\"]");
+        private By layoffReasonLocator => By.XPath("//*[@id=\"DismissalCause\"]");
+        private By employerResponsibilityCheckboxLocator => By.XPath("//*[@id=\"HasEmployerResponsibility\"]");
         private By createButtonLocator => By.XPath("//*[@id=\"myForm\"]/div[2]/div/input");
         private By confirmOkButtonLocator => By.XPath("//button[contains(text(), 'OK')]");
-        private By SuccessMessageLocator => By.Id("swal2-title"); // Asegúrate de que este selector sea correcto
+        private By SuccessMessageLocator => By.Id("swal2-title");
 
+
+        // Localizadores para eliminar despido
         private By optionsButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr/td[1]");
-        private By deleteButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr[2]/td/ul/li[2]/span[2]/button"); // Asegúrate de que este selector sea correcto.
+        //private By deleteButtonLocator => By.XPath("//*[@id=\"example1\"]/tbody/tr[2]/td/ul/li[2]/span[2]/button");
+        //private By deleteButtonLocator = By.XPath("//span[@class='dtr-data']//button[text()='Eliminar']");
+        private By deleteButtonLocator = By.XPath("//button[@class='btn btn-danger ' and text()='Eliminar']");
+
+
 
         private By searchInputLocator = By.CssSelector("input[type='search'].form-control.form-control-sm");
+        private By errorMessageLocator = By.CssSelector(".swal2-html-container");
 
 
 
 
 
         public LayoffsModulePage(IWebDriver driver) : base(driver) { }
+
+
+        // --------------------- MÉTODOS PARA MODULO ---------------------
 
         public void GoToActionsManagement()
         {
@@ -42,6 +52,7 @@ namespace SGRHTestProject.Pages
             Click(layoffsSectionLocator);
         }
 
+
         public void ClickRegisterLayoff()
         {
             Click(registerLayoffButtonLocator);
@@ -51,6 +62,14 @@ namespace SGRHTestProject.Pages
         {
             Click(listLayoffButtonLocator);
         }
+
+        // --------------------- MÉTODOS PARA REGISTRAR DESPIDO ---------------------
+
+        public void ClickCreateLayoff()
+        {
+            Click(createButtonLocator);
+        }
+
 
         public void SearchEmployee(string employeeIdentifier)
         {
@@ -64,26 +83,25 @@ namespace SGRHTestProject.Pages
             Type(reason, layoffReasonLocator);
         }
 
-        public void EnterSearchLayoff(string name)
-        {
-            ClearField(searchInputLocator);
-            Type(name, searchInputLocator);    
-        }
-
         public void MarkEmployerResponsibility()
         {
             Click(employerResponsibilityCheckboxLocator);
-        }
-
-        public void ClickCreateLayoff()
-        {
-            Click(createButtonLocator);
         }
 
         public void ConfirmLayoffCreation()
         {
             Click(confirmOkButtonLocator);
         }
+
+        public void EnterSearchLayoff(string name)
+        {
+            ClearField(searchInputLocator);
+            Type(name, searchInputLocator);    
+        }
+
+
+        // --------------------- MÉTODOS PARA ELIMINAR DESPIDO ---------------------
+
 
         public void ClickOptionsLayoff()
         {
@@ -95,7 +113,6 @@ namespace SGRHTestProject.Pages
             Click(deleteButtonLocator);
         }
 
-        // Método para obtener el texto del mensaje de éxito
         public string GetSuccessMessage()
         {
             try
@@ -108,6 +125,11 @@ namespace SGRHTestProject.Pages
             {
                 throw new Exception("El mensaje de éxito no fue encontrado.");
             }
+        }
+
+        public string GetErrorMessage()
+        {
+            return FindElement(errorMessageLocator).Text;
         }
 
     }
