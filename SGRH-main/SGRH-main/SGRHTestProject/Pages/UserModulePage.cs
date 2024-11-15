@@ -14,10 +14,9 @@ namespace SGRHTestProject.Pages
     public class UserModulePage : Base
     {
 
+        //Localizadores principales
         private By userModuleLocator = By.CssSelector("i.nav-icon.fas.fa-user");
-
         private By userModuleHeaderMessageLocator = By.CssSelector("h1.m-0");
-
         private By registerUserButton = By.CssSelector("a.btn.btn-success");
 
         //Localizadores para registrar usuario
@@ -35,7 +34,6 @@ namespace SGRHTestProject.Pages
         private By workPeriodDropdown = By.Id("WorkPeriodId");
 
         private By createUserBtnLocator = By.CssSelector("input[type='submit'][value='Crear']");
-
         private By confirmUserCreationBtn = By.CssSelector("button.swal2-confirm.swal2-styled");
 
 

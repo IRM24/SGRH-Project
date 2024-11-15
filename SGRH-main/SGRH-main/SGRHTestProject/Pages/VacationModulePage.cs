@@ -6,29 +6,31 @@ namespace SGRHTestProject.Pages
 {
     public class VacationModulePage : Base
     {
-        private By gestionAccionesLocator => By.LinkText("Gestión de Acciones");
+        //Localizadores principales
+        private By actionsManagementLocator => By.LinkText("Gestión de Acciones");
         private By vacacionesSectionLocator => By.XPath("/html/body/div[1]/aside[1]/div/div[4]/div/div/nav/ul/li[4]/ul/li[1]/a");
+        private By myRequestsLocator = By.XPath("//a[@href='/Vacations/MyVacationsRequests']//p[text()='Mis solicitudes']");
 
-        private By misSolicitudesLocator = By.XPath("//a[@href='/Vacations/MyVacationsRequests']//p[text()='Mis solicitudes']");
-        private By solicitarVacacionesBtnLocator => By.XPath("/html/body/div[1]/div[2]/section/div/div/div[2]/p/a");
+        // Localizadores para solicitar vacaciones
+        private By requestVacationBtnLocator => By.XPath("/html/body/div[1]/div[2]/section/div/div/div[2]/p/a");
         private By startDateLocator => By.Id("startDate");
         private By endDateLocator => By.Id("endDate");
         private By submitVacacionesBtnLocator => By.XPath("/html/body/div[1]/div[2]/section/div/div[1]/div/div/div/form/div[2]/div/input");
-
         private By errorMessageBalanceLocator => By.XPath("/html/body/div[2]/div");
         private By descriptionErrorLocator = By.XPath("/html/body/div[1]/div[2]/section/div/div[1]/div/div/div/form/div[1]/div[3]/span");
         //private By errorMessageInvalidDate = By.XPath("/html/body/div[4]/div");
         private By errorMessageInvalidDate = By.XPath("//div[@id='swal2-html-container']");
 
-
         private By descripcionLocator = By.XPath("//*[@id=\"Description\"]");
         private By commentsLocator = By.XPath("//*[@id=\"Comments\"]");
 
+        // Localizadores para descargas
         private By pdfDownloadButtonLocator = By.XPath("//*[@id=\"example1_wrapper\"]/div[1]/div[1]/div/button[4]");
         private By excelDownloadButtonLocator = By.XPath("//*[@id=\"example1_wrapper\"]/div[1]/div[1]/div/button[3]");
 
-        private By searchBoxLocator = By.XPath("//*[@id=\"example1_filter\"]/label/input"); // Cambia "searchBoxId" por el ID real de la barra de búsqueda
-        private By resultItemLocator = By.XPath("//*[@id=\"example1_wrapper\"]/div[2]/div"); // Cambia "resultClassName" por la clase real de los elementos de resultad
+        // Localizadores para busquedas
+        private By searchBoxLocator = By.XPath("//*[@id=\"example1_filter\"]/label/input"); 
+        private By resultItemLocator = By.XPath("//*[@id=\"example1_wrapper\"]/div[2]/div");
 
 
 
@@ -39,7 +41,7 @@ namespace SGRHTestProject.Pages
 
         public void GoToActionsManagement()
         {
-            Click(gestionAccionesLocator);
+            Click(actionsManagementLocator);
         }
 
         public void GoToVacationSection()
@@ -49,14 +51,14 @@ namespace SGRHTestProject.Pages
 
         public void GoToMyRequests()
         {
-            Click(misSolicitudesLocator);
+            Click(myRequestsLocator);
         }
 
 
         // --------------------- MÉTODOS PARA SOLICITAR VACACIONES ---------------------
         public void ClickRequestVacation()
         {
-            Click(solicitarVacacionesBtnLocator);
+            Click(requestVacationBtnLocator);
         }
 
         public void EnterVacationStartDate(string startDate)

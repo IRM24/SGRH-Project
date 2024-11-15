@@ -38,7 +38,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
         public void TearDown()
         {
             //driver.Close();
-            //driver.Dispose();
+            driver.Dispose();
         }
 
         // Caso de prueba: Acciones-01 - Solicitar días de vacaciones en un rango de fechas inválido
