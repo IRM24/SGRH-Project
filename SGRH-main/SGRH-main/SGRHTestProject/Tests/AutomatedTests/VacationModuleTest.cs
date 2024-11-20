@@ -134,6 +134,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
             Assert.IsTrue(matchingFiles.Any(), "El archivo Excel de solicitudes de vacaciones debería haberse descargado con el nombre esperado.");
         }
 
+        // Caso de prueba: Acciones-06 - Buscar un registro de vacaciones existente
         [Test]
         public void SearchExistingVacationRecord()
         {

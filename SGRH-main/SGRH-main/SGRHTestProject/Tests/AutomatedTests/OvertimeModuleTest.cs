@@ -45,13 +45,45 @@ namespace SGRHTestProject.Tests.AutomatedTests
         }
 
 
+
+        // Caso de prueba: Acciones-13 - Aprobar una solicitud de horas extras.
+        [Test]
+        public void ApproveOvertimeRequest()
+        {
+            overtimeModulePage.ClickOvertimeManagementButton();
+            Thread.Sleep(1000);
+
+            overtimeModulePage.ClickApproveOvertimeRequest();
+            Thread.Sleep(1500);
+
+            string approvalMessage = overtimeModulePage.GetApprovedRequestMessage();
+            Assert.AreEqual("Solicitud aprobada exitosamente.", approvalMessage, "El mensaje de aprobación no es correcto.");
+        }
+
+
+        // Caso de prueba: Acciones-14 - Rechazar una solicitud de horas extras.
+        [Test]
+        public void RejectOvertimeRequest()
+        {
+            overtimeModulePage.ClickOvertimeManagementButton();
+            Thread.Sleep(1000);
+
+            overtimeModulePage.ClickRejectOvertimeRequest();
+            Thread.Sleep(1500);
+
+            string approvalMessage = overtimeModulePage.GetRejectedRequestMessage();
+            Assert.AreEqual("Solicitud rechazada exitosamente.", approvalMessage, "El mensaje de rechazo no es correcto.");
+        }
+
+
+
         // Caso de prueba: Acciones-09 - Realizar una solicitud de horas extras
         [Test]
         public void RequestOvertime()
         {
             overtimeModulePage.ClickOvertimeRequestButton();
 
-            string fecha = "23/09/2024";
+            string fecha = "24/02/2024";
             int cantidadHoras = 2;
             string descripcion = "Solicitud de horas extras para el 23 de septiembre del 2024";
             string tipoHoras = "Sencillas";
@@ -86,34 +118,6 @@ namespace SGRHTestProject.Tests.AutomatedTests
 
             Assert.IsTrue(arePendingRequestsVisible, "No se encontraron solicitudes de horas extras pendientes.");
         }
-
-        // Caso de prueba: Acciones-13 - Aprobar una solicitud de horas extras.
-        [Test]
-        public void ApproveOvertimeRequest()
-        {
-            overtimeModulePage.ClickOvertimeManagementButton();
-            Thread.Sleep(1000);
-
-            overtimeModulePage.ClickApproveOvertimeRequest();
-
-            string approvalMessage = overtimeModulePage.GetApprovedRequestMessage();
-            Assert.AreEqual("Solicitud aprobada exitosamente.", approvalMessage, "El mensaje de aprobación no es correcto.");
-        }
-
-
-        // Caso de prueba: Acciones-14 - Rechazar una solicitud de horas extras.
-        [Test]
-        public void RejectOvertimeRequest()
-        {
-            overtimeModulePage.ClickOvertimeManagementButton();
-            Thread.Sleep(1000);
-
-            overtimeModulePage.ClickRejectOvertimeRequest();
-
-            string approvalMessage = overtimeModulePage.GetRejectedRequestMessage();
-            Assert.AreEqual("Solicitud rechazada exitosamente.", approvalMessage, "El mensaje de rechazo no es correcto.");
-        }
-
 
     }
 }

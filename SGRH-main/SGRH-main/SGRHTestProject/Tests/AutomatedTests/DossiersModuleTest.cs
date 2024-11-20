@@ -99,7 +99,7 @@ namespace SGRHTestProject.Tests.AutomatedTests
             string employeeId = "1-2312-3123";
             string documentType = "Identificación";
             string description = "Identificación actualizada German";
-            string documentFile = "identificacionFabiana2024.pdf"; // Documento opcional
+            string documentFile = "identificacionGerman2024.pdf"; // Documento opcional
 
             dossiersModulePage.ClickCreateDossierButton();
             Thread.Sleep(2000);

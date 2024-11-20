@@ -118,9 +118,9 @@ namespace SGRHTestProject.Tests.AutomatedTests
         [Test]
         public void EditUserData()
         {
-            string newLastName = "Garcia Lopez"; // Nuevo nombre
-            string newEmail = "ggarcia@gmail.com"; // Nuevo correo electrónico
-            string newRole = "SupervisorDpto"; // Nuevo rol
+            string newLastName = "Garcia Lopez";
+            string newEmail = "ggarcia@gmail.com";
+            string newRole = "SupervisorDpto";
 
             userModulePage.Search("German Garcia");
             Thread.Sleep(1000);
